@@ -1,0 +1,732 @@
+{
+    "openapi": "3.0.0",
+    "components": {
+        "examples": {},
+        "headers": {},
+        "parameters": {},
+        "requestBodies": {},
+        "responses": {},
+        "schemas": {
+            "LoginRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "phone",
+                            "email"
+                        ]
+                    }
+                },
+                "required": [
+                    "password"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "UserStatus": {
+                "type": "string",
+                "enum": [
+                    "active",
+                    "inactive",
+                    "suspended",
+                    "pending",
+                    "deleted",
+                    "archived",
+                    "rejected"
+                ]
+            },
+            "IPermissionAttributes": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "IRoleAttributes": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "permissions": {
+                        "items": {
+                            "$ref": "#/components/schemas/IPermissionAttributes"
+                        },
+                        "type": "array"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Pick_IUserAttributes.Exclude_keyofIUserAttributes.password-or-googleId__": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "fullName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number",
+                                "format": "double"
+                            }
+                        ]
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/UserStatus"
+                    },
+                    "roles": {
+                        "items": {
+                            "$ref": "#/components/schemas/IRoleAttributes"
+                        },
+                        "type": "array"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "fullName",
+                    "email",
+                    "status",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "type": "object",
+                "description": "From T, pick a set of properties whose keys are in the union K"
+            },
+            "IUserResponse": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "fullName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phoneNumber": {
+                        "anyOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "number",
+                                "format": "double"
+                            }
+                        ]
+                    },
+                    "status": {
+                        "$ref": "#/components/schemas/UserStatus"
+                    },
+                    "roles": {
+                        "items": {},
+                        "type": "array"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "required": [
+                    "id",
+                    "fullName",
+                    "email",
+                    "status",
+                    "createdAt",
+                    "updatedAt"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ServiceResponse__user-IUserResponse-or-null__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "properties": {
+                            "user": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/IUserResponse"
+                                    }
+                                ],
+                                "nullable": true
+                            }
+                        },
+                        "required": [
+                            "user"
+                        ],
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "statusCode": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "result",
+                    "statusCode"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "SignupRequest": {
+                "properties": {
+                    "fullName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "roleType": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "fullName",
+                    "password",
+                    "phone"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ServiceResponse__user-IUserResponse-or-null--accessToken_63_-string--refreshToken_63_-string__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "properties": {
+                            "refreshToken": {
+                                "type": "string"
+                            },
+                            "accessToken": {
+                                "type": "string"
+                            },
+                            "user": {
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/IUserResponse"
+                                    }
+                                ],
+                                "nullable": true
+                            }
+                        },
+                        "required": [
+                            "user"
+                        ],
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "statusCode": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "result",
+                    "statusCode"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ServiceResponse__exists-boolean__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "properties": {
+                            "exists": {
+                                "type": "boolean"
+                            }
+                        },
+                        "required": [
+                            "exists"
+                        ],
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "statusCode": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "result",
+                    "statusCode"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ServiceResponse__accessToken-string--refreshToken-string__": {
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "properties": {
+                            "refreshToken": {
+                                "type": "string"
+                            },
+                            "accessToken": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "refreshToken",
+                            "accessToken"
+                        ],
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "statusCode": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "result",
+                    "statusCode"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ServiceResponse_null_": {
+                "properties": {
+                    "success": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "result": {
+                        "anyOf": [],
+                        "nullable": true
+                    },
+                    "statusCode": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "success",
+                    "message",
+                    "result",
+                    "statusCode"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            }
+        },
+        "securitySchemes": {
+            "jwt": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "JWT token (Bearer <token>)"
+            }
+        }
+    },
+    "info": {
+        "title": "Attendance Backend API",
+        "version": "1.0.0",
+        "description": "API documentation for attendance management system",
+        "license": {
+            "name": "ISC"
+        },
+        "contact": {
+            "name": "API Support"
+        }
+    },
+    "paths": {
+        "/health": {
+            "get": {
+                "operationId": "GetHealth",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "status"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "parameters": []
+            }
+        },
+        "/api/auth/login": {
+            "post": {
+                "operationId": "Login",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null__"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null__"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null__"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "operationId": "GetCurrentUser",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null__"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null__"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": []
+            }
+        },
+        "/api/auth/signup": {
+            "post": {
+                "operationId": "Signup",
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null--accessToken_63_-string--refreshToken_63_-string__"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null--accessToken_63_-string--refreshToken_63_-string__"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__user-IUserResponse-or-null--accessToken_63_-string--refreshToken_63_-string__"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SignupRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/check-email": {
+            "post": {
+                "operationId": "CheckEmail",
+                "responses": {
+                    "200": {
+                        "description": "Email check Successfull",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__exists-boolean__"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "email"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/refresh": {
+            "post": {
+                "operationId": "RefreshToken",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__accessToken-string--refreshToken-string__"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse__accessToken-string--refreshToken-string__"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "refreshToken": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "refreshToken"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "operationId": "Logout",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ServiceResponse_null_"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": []
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "/"
+        }
+    ]
+}
