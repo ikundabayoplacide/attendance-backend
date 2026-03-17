@@ -30,7 +30,12 @@ initializeDatabase()
 
     // cross origins for security
 
-    const allowedOrigins = [process.env.FRONTEND_URL || "http://localhost:3000","http://localhost:8080","http://localhost:5173"];
+    const allowedOrigins = [process.env.FRONTEND_URL || "http://localhost:3000",
+        "https://backend.eac-se.com",
+        "https://one.eac-se.com",
+        "http://localhost:8080",
+        "http://localhost:5173"
+    ];
 
     app.use(cors({
         origin: function(origin, callback) {

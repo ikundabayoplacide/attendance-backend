@@ -28,6 +28,14 @@ const permissions = [
     { name: 'equipement:delete', description: 'Delete a equipement' },
     { name: 'equipement:list', description: 'List all equipements' },
 
+    //security GiGate guard permissions
+    { name: 'security_gate:create', description: 'Create a new security gate' },
+    { name: 'security_gate:read', description: 'Read security gate information' },
+    { name: 'security_gate:update', description: 'Update security gate information' },
+    { name: 'security_gate:delete', description: 'Delete a security gate' },
+    {name: 'security_gate:suspend', description: 'Suspend security gate' },
+    { name: 'security_gate:list', description: 'List all security gates' },
+
     // subscriptions pemissions
     { name: 'subscription:create', description: 'Create a new subscription' },
     { name: 'subscription:read', description: 'Read subscription information' },
@@ -128,6 +136,29 @@ const permissions = [
     { name: 'appointment:update', description: 'Update appointment information' },
     { name: 'appointment:delete', description: 'Delete a appointment' },
     { name: 'appointment:list', description: 'List all appointments' },
+    { name: 'appointment:confirm', description: 'Confirm an appointment' },
+    { name: 'appointment:cancel', description: 'Cancel an appointment' },
+
+    //scanning permissions
+    { name: 'scanning:read', description: 'Read scanning information' },
+    { name: 'scanning:create', description: 'Create a new scanning record' },
+    { name: 'scanning:update', description: 'Update scanning information' },
+    { name: 'scanning:delete', description: 'Delete a scanning record' },
+    { name: 'scanning:list', description: 'List all scanning records' },
+
+    //card management permissions
+    { name: 'card:create', description: 'Create a new card' },
+    { name: 'card:read', description: 'Read card information' },
+    { name: 'card:update', description: 'Update card information' },
+    { name: 'card:delete', description: 'Delete a card' },
+    { name: 'card:list', description: 'List all cards' },
+
+    //smoke  permissions
+    { name: 'smoke:read', description: 'Read smoke detection information' },
+    { name: 'smoke:create', description: 'Create a new smoke detection record' },
+    { name: 'smoke:update', description: 'Update smoke detection information' },
+    { name: 'smoke:delete', description: 'Delete a smoke detection record' },
+    { name: 'smoke:list', description: 'List all smoke detection records' },
 ]
 
 // Permission based on the role
@@ -183,7 +214,7 @@ const roleTemplates = {
             'user:read', 'user:create', 'user:update', 'user:list', 'visitor:read', 'visitor:list', 'report:read', 'report:list', 'event:read', 'event:list', 'attendance:read',
             'attendance:list', 'announcement:read', 'announcement:list', 'appointment:read', 'appointment:list', 'handover:read', 'handover:list',
             'equipement:read', 'equipement:list', 'form:read', 'form:create', 'form:list', 'form:submit', 'setting:read', 'setting:list', 'system_logs:read',
-            'system_logs:list', 'system_healthy:read', 'security:control'
+            'system_logs:list', 'system_healthy:read', 'security:control','security_gate:read', 'security_gate:list', 'security_gate:suspend', 'security_gate:update', 'security_gate:create', 'security_gate:delete'
         ]
     },
     staff: {
@@ -360,7 +391,7 @@ const setupSystem = async () => {
         const ownerEmail = 'santech@gmail.com';
         const ownerPassword = 'Santech@2026';
         const phoneNumber = '1234567890';
-        
+
         const ownerUser = await db.User.create({
             fullName: 'System Owner',
             email: ownerEmail,

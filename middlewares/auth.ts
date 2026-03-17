@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { ServiceResponse } from "../utils/serviceResponse";
 import { verifyToken } from "../utils/jwt";
 import db from "../models";
-import Role from "../models/roles";
+import Role from "../models/role";
 // import {Role} from './models/role'
 
 //Extend the role type to include the permissions association
