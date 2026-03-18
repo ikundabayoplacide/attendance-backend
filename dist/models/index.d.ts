@@ -1,0 +1,26 @@
+import Permission from "./permission";
+import Role from "./role";
+import UserRole from "./userRole";
+import User from "./user";
+import BlacklistedToken from "./blacklistedToken";
+import Appointment from "./appointment";
+import AttendEvent from "./event";
+import Equipements from "./equipment";
+import Handover from "./handover";
+import Attendance from "./attendance";
+import Card from "./card";
+declare const db: {
+    sequelize: import("sequelize").Sequelize;
+    User: typeof User;
+    Role: typeof Role;
+    Permission: typeof Permission;
+    UserRole: typeof UserRole;
+    BlacklistedToken: typeof BlacklistedToken;
+    Appointment: typeof Appointment;
+    AttendEvent: typeof AttendEvent;
+    Equipements: typeof Equipements;
+    Handover: typeof Handover;
+    Attendance: typeof Attendance;
+    Card: typeof Card;
+};
+export default db;

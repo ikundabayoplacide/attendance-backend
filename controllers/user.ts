@@ -4,12 +4,13 @@ import { Body, Controller, Delete, Get, Patch, Path, Post, Put, Route, Security,
 import User from "../models/user";
 import Attendance from "../models/attendance";
 import { IUserAttributes } from "../types/user-type";
-import { hash } from "bcrypt";
+import { hash } from "bcryptjs";
 
 export interface UserCreateRequest {
     fullName: string;
-    email: string;
-    password: string;
+    email?: string;
+    password?: string;
+    scannedId:string;
     phoneNumber?: string;
     status?: string;
     category?: string;
@@ -96,19 +97,21 @@ export class UserController extends Controller{
         const now = new Date();
         const today = now.toISOString().split('T')[0];
 
-        // Check if user already exists by email or nationalId
-        const existingUser = await User.findOne({
-            where: userData.nationalId
-                ? { nationalId: userData.nationalId }
-                : { email: userData.email }
-        });
+        // Check if user already exists by nationalId or scannedId
+        const whereClause: any = {};
+        if (userData.nationalId) whereClause.nationalId = userData.nationalId;
+        else if (userData.scannedId) whereClause.scannedId = userData.scannedId;
+
+        const existingUser = whereClause.nationalId || whereClause.scannedId
+            ? await User.findOne({ where: whereClause })
+            : null;
 
         let user: User;
         let isNewUser = false;
 
         if (!existingUser) {
             // First time - register user and record attendance
-            const hashedPassword = await hash(userData.password, 12);
+            const hashedPassword = userData.password ? await hash(userData.password, 12) : undefined;
             user = await User.create({ ...userData, password: hashedPassword });
             isNewUser = true;
         } else {

@@ -155,8 +155,9 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "fullName": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
-            "password": {"dataType":"string","required":true},
+            "email": {"dataType":"string"},
+            "password": {"dataType":"string"},
+            "scannedId": {"dataType":"string","required":true},
             "phoneNumber": {"dataType":"string"},
             "status": {"dataType":"string"},
             "category": {"dataType":"string"},

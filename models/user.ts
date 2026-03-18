@@ -5,9 +5,9 @@ import Role from "./role";
 interface IUserAttributes {
     id: string;
     fullName: string;
-    email: string;
+    email?: string;
     phoneNumber?: string|number;
-    password: string;
+    password?: string;
     status: string;
     category?: string;
     badge?:string;
@@ -18,6 +18,7 @@ interface IUserAttributes {
     //Other and Biometric attributes
     profilePicture?: string;
     dateOfBirth?: Date;
+    scannedId?:string
     nationalId?: string;
     fingerPrint?: string;
     face?: string;
@@ -64,8 +65,8 @@ class User extends Model<IUserAttributes, Optional<IUserAttributes, 'id'|'status
     declare id: string;
     declare fullName: string;
     declare phoneNumber?: string|number;
-    declare email: string;
-    declare password: string;
+    declare email?: string;
+    declare password?: string;
     declare category?: string;
     declare badge?: string;
     declare company?: string ;
@@ -76,6 +77,7 @@ class User extends Model<IUserAttributes, Optional<IUserAttributes, 'id'|'status
     declare profilePicture?: string;
     declare dateOfBirth?: Date;
     declare nationalId?: string;
+    declare scannedId?: string;
     declare fingerPrint?: string;
     declare face?: string;
     declare voice?: string;
@@ -130,7 +132,7 @@ User.init({
     },
     email:{
         type: DataTypes.STRING,
-        allowNull:false,
+        allowNull:true,
         validate:{
             isEmail:true,
             notEmpty:true,
@@ -145,7 +147,7 @@ User.init({
     },
     password:{
         type: DataTypes.STRING,
-        allowNull:false,
+        allowNull:true,
         validate:{
             notEmpty:true,
             len:[6,100],
@@ -182,6 +184,10 @@ User.init({
     },
     nationalId:{
         type: DataTypes.STRING,
+        allowNull:true,
+    },
+    scannedId:{
+        type:DataTypes.TEXT,
         allowNull:true,
     },
     fingerPrint:{

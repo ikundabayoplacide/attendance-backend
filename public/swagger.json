@@ -380,6 +380,9 @@
 					"password": {
 						"type": "string"
 					},
+					"scannedId": {
+						"type": "string"
+					},
 					"phoneNumber": {
 						"type": "string"
 					},
@@ -407,8 +410,7 @@
 				},
 				"required": [
 					"fullName",
-					"email",
-					"password"
+					"scannedId"
 				],
 				"type": "object",
 				"additionalProperties": false
