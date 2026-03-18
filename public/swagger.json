@@ -16,7 +16,8 @@
 					"pending",
 					"deleted",
 					"archived",
-					"rejected"
+					"rejected",
+					"blacklisted"
 				]
 			},
 			"IPermissionAttributes": {
@@ -386,6 +387,9 @@
 						"type": "string"
 					},
 					"category": {
+						"type": "string"
+					},
+					"badge": {
 						"type": "string"
 					},
 					"role": {
@@ -1289,6 +1293,167 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"CardResponse": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"cardNumber": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string"
+					},
+					"doneBy": {
+						"type": "string"
+					},
+					"location": {
+						"type": "string"
+					},
+					"branch": {
+						"type": "string"
+					},
+					"assignedTo": {
+						"type": "string"
+					},
+					"createdAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"updatedAt": {
+						"type": "string",
+						"format": "date-time"
+					}
+				},
+				"required": [
+					"id",
+					"cardNumber",
+					"status",
+					"doneBy"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CardListResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"result": {
+						"items": {
+							"$ref": "#/components/schemas/CardResponse"
+						},
+						"type": "array",
+						"nullable": true
+					},
+					"statusCode": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"success",
+					"message",
+					"result",
+					"statusCode"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CardSingleResponse": {
+				"properties": {
+					"success": {
+						"type": "boolean"
+					},
+					"message": {
+						"type": "string"
+					},
+					"result": {
+						"allOf": [
+							{
+								"$ref": "#/components/schemas/CardResponse"
+							}
+						],
+						"nullable": true
+					},
+					"statusCode": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"success",
+					"message",
+					"result",
+					"statusCode"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CreateCardRequest": {
+				"properties": {
+					"cardNumber": {
+						"type": "string"
+					},
+					"location": {
+						"type": "string"
+					},
+					"branch": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"Activated",
+							"Unactivated"
+						]
+					},
+					"doneBy": {
+						"type": "string"
+					},
+					"assignedTo": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"cardNumber",
+					"status",
+					"doneBy"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"UpdateCardRequest": {
+				"properties": {
+					"cardNumber": {
+						"type": "string"
+					},
+					"location": {
+						"type": "string"
+					},
+					"branch": {
+						"type": "string"
+					},
+					"status": {
+						"type": "string",
+						"enum": [
+							"Activated",
+							"Unactivated"
+						]
+					},
+					"doneBy": {
+						"type": "string"
+					},
+					"assignedTo": {
+						"type": "string"
+					}
+				},
+				"type": "object",
+				"additionalProperties": false
+			},
 			"LoginRequest": {
 				"properties": {
 					"email": {
@@ -1788,6 +1953,12 @@
 						"type": "string",
 						"format": "date-time"
 					},
+					"hoster": {
+						"type": "string"
+					},
+					"badge": {
+						"type": "string"
+					},
 					"date": {
 						"type": "string"
 					},
@@ -1900,6 +2071,10 @@
 						"type": "string"
 					},
 					"checkOut": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"checkIn": {
 						"type": "string",
 						"format": "date-time"
 					}
@@ -3986,6 +4161,242 @@
 				}
 			}
 		},
+		"/api/cards": {
+			"get": {
+				"operationId": "GetAllCards",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardListResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:read"
+						]
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateCard",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:create"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CreateCardRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/cards/{id}": {
+			"get": {
+				"operationId": "GetCard",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:read"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			},
+			"put": {
+				"operationId": "UpdateCard",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:update"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UpdateCardRequest"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"operationId": "DeleteCard",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:delete"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/cards/assign/{id}": {
+			"put": {
+				"operationId": "AssignCard",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:assign"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"userId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"userId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/auth/login": {
 			"post": {
 				"operationId": "Login",
@@ -4387,7 +4798,7 @@
 				]
 			}
 		},
-		"/api/attendance/user/{userId}": {
+		"/api/attendance/by-user/{userId}": {
 			"get": {
 				"operationId": "GetAttendanceByUserId",
 				"responses": {
@@ -4424,7 +4835,7 @@
 				]
 			}
 		},
-		"/api/attendance/date/{date}": {
+		"/api/attendance/by-date/{date}": {
 			"get": {
 				"operationId": "GetAttendanceByDate",
 				"responses": {
@@ -4461,7 +4872,7 @@
 				]
 			}
 		},
-		"/api/attendance/report/{startDate}/{endDate}": {
+		"/api/attendance/report/range/{startDate}/{endDate}": {
 			"get": {
 				"operationId": "GetAttendanceReport",
 				"responses": {
@@ -4506,7 +4917,7 @@
 				]
 			}
 		},
-		"/api/attendance/report/{userId}/{startDate}/{endDate}": {
+		"/api/attendance/report/user/{userId}/{startDate}/{endDate}": {
 			"get": {
 				"operationId": "GetUserAttendanceReport",
 				"responses": {

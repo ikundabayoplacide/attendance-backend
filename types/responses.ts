@@ -70,3 +70,14 @@ export interface HandoverResponse{
     createdAt?:Date;
     updatedAt?:Date;
 }
+export interface CardResponse{
+    id:string;
+    cardNumber:string;
+    status:string;
+    doneBy:string;
+    location?:string;
+    branch?:string;
+    assignedTo?:string;
+    createdAt?:Date;
+    updatedAt?:Date;
+}

@@ -6,7 +6,7 @@ export interface IServiceResponse<T = any> {
   message: string;
   result: T | null;
   statusCode: number;
-  [key: string]: any; // For additional custom fields
+  [key: string]: any; // For aCarddditional custom fields
 }
 
 export class ServiceResponse<T = any, E = Record<string, unknown>> implements IServiceResponse<T> {

@@ -6,6 +6,8 @@ interface IAttendanceAttributes {
     userId: string;
     checkIn: Date;
     checkOut?: Date;
+    hoster:string;
+    badge:string;
     date: string;
     status: 'present' | 'late' | 'left_early' | 'absent';
     note?: string;
@@ -13,11 +15,13 @@ interface IAttendanceAttributes {
     updatedAt?: Date;
 }
 
-class Attendance extends Model<IAttendanceAttributes, Optional<IAttendanceAttributes, 'id' | 'checkOut' | 'note' | 'createdAt' | 'updatedAt'>> implements IAttendanceAttributes {
+class Attendance extends Model<IAttendanceAttributes, Optional<IAttendanceAttributes, 'id' | 'checkOut' | 'hoster' | 'badge' | 'note' | 'createdAt' | 'updatedAt'>> implements IAttendanceAttributes {
     declare id: string;
     declare userId: string;
     declare checkIn: Date;
     declare checkOut?: Date;
+    declare hoster:string;
+    declare badge:string;
     declare date: string;
     declare status: 'present' | 'late' | 'left_early' | 'absent';
     declare note?: string;
@@ -47,6 +51,14 @@ Attendance.init({
     checkOut: {
         type: DataTypes.DATE,
         allowNull: true,
+    },
+    hoster:{
+        type:DataTypes.UUID,
+        allowNull:true,
+    },
+    badge:{
+        type:DataTypes.STRING,
+        allowNull:true,
     },
     date: {
         type: DataTypes.DATEONLY,

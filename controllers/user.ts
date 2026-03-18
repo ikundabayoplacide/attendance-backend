@@ -13,6 +13,7 @@ export interface UserCreateRequest {
     phoneNumber?: string;
     status?: string;
     category?: string;
+    badge?: string;
     role?: string;
     company?:string;
     department?: string;
@@ -121,6 +122,8 @@ export class UserController extends Controller{
             checkIn: now,
             date: today,
             status: 'present',
+            hoster: userData.email,
+            badge: userData.badge || ''
         });
 
         return ServiceResponse.success(

@@ -16,6 +16,8 @@ import { EventController } from './../controllers/event';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { EquipementController } from './../controllers/equipment';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { CardController } from './../controllers/card';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AuthController } from './../controllers/auth';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { AttendanceController } from './../controllers/attendance';
@@ -33,7 +35,7 @@ const expressAuthenticationRecasted = expressAuthentication as (req: ExRequest, 
 const models: TsoaRoute.Models = {
     "UserStatus": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["active"]},{"dataType":"enum","enums":["inactive"]},{"dataType":"enum","enums":["suspended"]},{"dataType":"enum","enums":["pending"]},{"dataType":"enum","enums":["deleted"]},{"dataType":"enum","enums":["archived"]},{"dataType":"enum","enums":["rejected"]}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["active"]},{"dataType":"enum","enums":["inactive"]},{"dataType":"enum","enums":["suspended"]},{"dataType":"enum","enums":["pending"]},{"dataType":"enum","enums":["deleted"]},{"dataType":"enum","enums":["archived"]},{"dataType":"enum","enums":["rejected"]},{"dataType":"enum","enums":["blacklisted"]}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "IPermissionAttributes": {
@@ -158,6 +160,7 @@ const models: TsoaRoute.Models = {
             "phoneNumber": {"dataType":"string"},
             "status": {"dataType":"string"},
             "category": {"dataType":"string"},
+            "badge": {"dataType":"string"},
             "role": {"dataType":"string"},
             "company": {"dataType":"string"},
             "department": {"dataType":"string"},
@@ -521,6 +524,70 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CardResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string","required":true},
+            "cardNumber": {"dataType":"string","required":true},
+            "status": {"dataType":"string","required":true},
+            "doneBy": {"dataType":"string","required":true},
+            "location": {"dataType":"string"},
+            "branch": {"dataType":"string"},
+            "assignedTo": {"dataType":"string"},
+            "createdAt": {"dataType":"datetime"},
+            "updatedAt": {"dataType":"datetime"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CardListResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "success": {"dataType":"boolean","required":true},
+            "message": {"dataType":"string","required":true},
+            "result": {"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"CardResponse"}},{"dataType":"enum","enums":[null]}],"required":true},
+            "statusCode": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CardSingleResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "success": {"dataType":"boolean","required":true},
+            "message": {"dataType":"string","required":true},
+            "result": {"dataType":"union","subSchemas":[{"ref":"CardResponse"},{"dataType":"enum","enums":[null]}],"required":true},
+            "statusCode": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "CreateCardRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "cardNumber": {"dataType":"string","required":true},
+            "location": {"dataType":"string"},
+            "branch": {"dataType":"string"},
+            "status": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Activated"]},{"dataType":"enum","enums":["Unactivated"]}],"required":true},
+            "doneBy": {"dataType":"string","required":true},
+            "assignedTo": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateCardRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "cardNumber": {"dataType":"string"},
+            "location": {"dataType":"string"},
+            "branch": {"dataType":"string"},
+            "status": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["Activated"]},{"dataType":"enum","enums":["Unactivated"]}]},
+            "doneBy": {"dataType":"string"},
+            "assignedTo": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "LoginRequest": {
         "dataType": "refObject",
         "properties": {
@@ -642,6 +709,8 @@ const models: TsoaRoute.Models = {
             "userId": {"dataType":"string","required":true},
             "checkIn": {"dataType":"datetime","required":true},
             "checkOut": {"dataType":"datetime"},
+            "hoster": {"dataType":"string"},
+            "badge": {"dataType":"string"},
             "date": {"dataType":"string","required":true},
             "status": {"dataType":"string","required":true},
             "note": {"dataType":"string"},
@@ -688,6 +757,7 @@ const models: TsoaRoute.Models = {
             "status": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["present"]},{"dataType":"enum","enums":["late"]},{"dataType":"enum","enums":["left_early"]},{"dataType":"enum","enums":["absent"]}]},
             "note": {"dataType":"string"},
             "checkOut": {"dataType":"datetime"},
+            "checkIn": {"dataType":"datetime"},
         },
         "additionalProperties": false,
     },
@@ -2028,6 +2098,193 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_getAllCards: Record<string, TsoaRoute.ParameterSchema> = {
+        };
+        app.get('/api/cards',
+            authenticateMiddleware([{"jwt":["card:read"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.getAllCards)),
+
+            async function CardController_getAllCards(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_getAllCards, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'getAllCards',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_createCard: Record<string, TsoaRoute.ParameterSchema> = {
+                body: {"in":"body","name":"body","required":true,"ref":"CreateCardRequest"},
+        };
+        app.post('/api/cards',
+            authenticateMiddleware([{"jwt":["card:create"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.createCard)),
+
+            async function CardController_createCard(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_createCard, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'createCard',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_getCard: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+        };
+        app.get('/api/cards/:id',
+            authenticateMiddleware([{"jwt":["card:read"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.getCard)),
+
+            async function CardController_getCard(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_getCard, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'getCard',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_assignCard: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"userId":{"dataType":"string","required":true}}},
+        };
+        app.put('/api/cards/assign/:id',
+            authenticateMiddleware([{"jwt":["card:assign"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.assignCard)),
+
+            async function CardController_assignCard(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_assignCard, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'assignCard',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_updateCard: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                body: {"in":"body","name":"body","required":true,"ref":"UpdateCardRequest"},
+        };
+        app.put('/api/cards/:id',
+            authenticateMiddleware([{"jwt":["card:update"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.updateCard)),
+
+            async function CardController_updateCard(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_updateCard, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'updateCard',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_deleteCard: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+        };
+        app.delete('/api/cards/:id',
+            authenticateMiddleware([{"jwt":["card:delete"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.deleteCard)),
+
+            async function CardController_deleteCard(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_deleteCard, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteCard',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsAuthController_login: Record<string, TsoaRoute.ParameterSchema> = {
                 credentials: {"in":"body","name":"credentials","required":true,"ref":"LoginRequest"},
                 res: {"in":"res","name":"403","required":true,"ref":"ServiceResponse__user-IUserResponse-or-null__"},
@@ -2279,7 +2536,7 @@ export function RegisterRoutes(app: Router) {
         const argsAttendanceController_getAttendanceByUserId: Record<string, TsoaRoute.ParameterSchema> = {
                 userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
         };
-        app.get('/api/attendance/user/:userId',
+        app.get('/api/attendance/by-user/:userId',
             authenticateMiddleware([{"jwt":["attendance:read"]}]),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController)),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController.prototype.getAttendanceByUserId)),
@@ -2310,7 +2567,7 @@ export function RegisterRoutes(app: Router) {
         const argsAttendanceController_getAttendanceByDate: Record<string, TsoaRoute.ParameterSchema> = {
                 date: {"in":"path","name":"date","required":true,"dataType":"string"},
         };
-        app.get('/api/attendance/date/:date',
+        app.get('/api/attendance/by-date/:date',
             authenticateMiddleware([{"jwt":["attendance:read"]}]),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController)),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController.prototype.getAttendanceByDate)),
@@ -2342,7 +2599,7 @@ export function RegisterRoutes(app: Router) {
                 startDate: {"in":"path","name":"startDate","required":true,"dataType":"string"},
                 endDate: {"in":"path","name":"endDate","required":true,"dataType":"string"},
         };
-        app.get('/api/attendance/report/:startDate/:endDate',
+        app.get('/api/attendance/report/range/:startDate/:endDate',
             authenticateMiddleware([{"jwt":["attendance:read"]}]),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController)),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController.prototype.getAttendanceReport)),
@@ -2375,7 +2632,7 @@ export function RegisterRoutes(app: Router) {
                 startDate: {"in":"path","name":"startDate","required":true,"dataType":"string"},
                 endDate: {"in":"path","name":"endDate","required":true,"dataType":"string"},
         };
-        app.get('/api/attendance/report/:userId/:startDate/:endDate',
+        app.get('/api/attendance/report/user/:userId/:startDate/:endDate',
             authenticateMiddleware([{"jwt":["attendance:read"]}]),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController)),
             ...(fetchMiddlewares<RequestHandler>(AttendanceController.prototype.getUserAttendanceReport)),

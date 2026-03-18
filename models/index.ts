@@ -9,6 +9,7 @@ import AttendEvent from "./event";
 import Equipements from "./equipment";
 import Handover from "./handover";
 import Attendance from "./attendance";
+import Card from "./card";
 
 // Centralized associations  of all models for easy import in other parts of the application
 User.belongsToMany(Role,{
@@ -78,6 +79,9 @@ Handover.belongsToMany(User,{
     otherKey:'userId'
 })
 
+Card.belongsTo(User,{as:'assignedUser', foreignKey:'assignedTo'})
+User.hasOne(Card,{as:'card', foreignKey:'assignedTo'})
+
 User.hasMany(Appointment, { foreignKey: 'userId', as: 'appointments' });
 Appointment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 
@@ -95,7 +99,8 @@ const db = {
     AttendEvent,
     Equipements,
     Handover,
-    Attendance
+    Attendance,
+    Card
 };
 
 export default db;

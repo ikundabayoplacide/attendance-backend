@@ -10,6 +10,7 @@ interface IUserAttributes {
     password: string;
     status: string;
     category?: string;
+    badge?:string;
     department?:string;
     company?:string;
     UserRoles?: any[];
@@ -66,6 +67,7 @@ class User extends Model<IUserAttributes, Optional<IUserAttributes, 'id'|'status
     declare email: string;
     declare password: string;
     declare category?: string;
+    declare badge?: string;
     declare company?: string ;
     declare status: string;
     declare department?: string | undefined;
@@ -153,12 +155,16 @@ User.init({
         type: DataTypes.STRING,
         allowNull:true,
     },
+    badge:{
+        type:DataTypes.STRING,
+        allowNull:true,
+    },
     company:{
         type:DataTypes.STRING,
         allowNull:true
     },
     status:{
-        type: DataTypes.ENUM('active', 'inactive', 'suspended', 'pending', 'deleted', 'archived', 'rejected'),
+        type: DataTypes.ENUM('active', 'inactive', 'suspended', 'pending', 'deleted', 'archived', 'rejected','blacklisted'),
         allowNull:false,
         defaultValue:'pending',
     },
@@ -179,47 +185,47 @@ User.init({
         allowNull:true,
     },
     fingerPrint:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     face:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     voice:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     signature:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     passport:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     motion:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     igipande:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     ocr:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     gesture:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     pupil:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
     otherBiometric:{
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull:true,
     },
      // address details

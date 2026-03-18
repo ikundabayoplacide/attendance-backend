@@ -1,7 +1,7 @@
 import { Model,Optional } from "sequelize";
 import {IRoleAttributes} from "./role-type";
 
-export type UserStatus = 'active' | 'inactive' | 'suspended' | 'pending'| 'deleted'| 'archived'|'rejected';
+export type UserStatus = 'active' | 'inactive' | 'suspended' | 'pending'| 'deleted'| 'archived'|'rejected'|'blacklisted';
 
 export interface IUserAttributes{
     id:string;

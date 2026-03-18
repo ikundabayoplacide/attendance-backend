@@ -1,5 +1,4 @@
 import { ServiceResponse } from '../utils/serviceResponse';
-import { asyncCatch } from '../middlewares/errorHandler';
 import { Op } from 'sequelize';
 import { Body, Controller, Delete, Get, Path, Put, Route, Security, Tags } from 'tsoa';
 import Attendance from '../models/attendance';
@@ -10,6 +9,8 @@ export interface AttendanceResponse {
     userId: string;
     checkIn: Date;
     checkOut?: Date;
+    hoster?: string;
+    badge?: string;
     date: string;
     status: string;
     note?: string;
@@ -40,6 +41,7 @@ export interface UpdateAttendanceRequest {
     status?: 'present' | 'late' | 'left_early' | 'absent';
     note?: string;
     checkOut?: Date;
+    checkIn?:Date
 }
 
 @Route('api/attendance')
@@ -49,7 +51,6 @@ export class AttendanceController extends Controller {
     // Get all attendance records with user details
     @Security('jwt', ['attendance:read'])
     @Get('/')
-    @asyncCatch
     public async getAllAttendance(): Promise<AttendanceListResponse> {
         const records = await Attendance.findAll({
             include: [{ model: User, as: 'user', attributes: ['fullName', 'email', 'department', 'nationalId', 'category'] }],
@@ -61,7 +62,6 @@ export class AttendanceController extends Controller {
     // Get single attendance record by id
     @Security('jwt', ['attendance:read'])
     @Get('/{id}')
-    @asyncCatch
     public async getAttendanceById(@Path() id: string): Promise<AttendanceSingleResponse> {
         const record = await Attendance.findByPk(id, {
             include: [{ model: User, as: 'user', attributes: ['fullName', 'email', 'department', 'nationalId', 'category'] }]
@@ -72,8 +72,7 @@ export class AttendanceController extends Controller {
 
     // Get attendance records by userId
     @Security('jwt', ['attendance:read'])
-    @Get('/user/{userId}')
-    @asyncCatch
+    @Get('/by-user/{userId}')
     public async getAttendanceByUserId(@Path() userId: string): Promise<AttendanceListResponse> {
         const records = await Attendance.findAll({
             where: { userId },
@@ -85,8 +84,7 @@ export class AttendanceController extends Controller {
 
     // Get attendance records by date
     @Security('jwt', ['attendance:read'])
-    @Get('/date/{date}')
-    @asyncCatch
+    @Get('/by-date/{date}')
     public async getAttendanceByDate(@Path() date: string): Promise<AttendanceListResponse> {
         const records = await Attendance.findAll({
             where: { date },
@@ -98,8 +96,7 @@ export class AttendanceController extends Controller {
 
     // Get attendance records by date range (for reports)
     @Security('jwt', ['attendance:read'])
-    @Get('/report/{startDate}/{endDate}')
-    @asyncCatch
+    @Get('/report/range/{startDate}/{endDate}')
     public async getAttendanceReport(
         @Path() startDate: string,
         @Path() endDate: string
@@ -116,8 +113,7 @@ export class AttendanceController extends Controller {
 
     // Get attendance report by userId and date range
     @Security('jwt', ['attendance:read'])
-    @Get('/report/{userId}/{startDate}/{endDate}')
-    @asyncCatch
+    @Get('/report/user/{userId}/{startDate}/{endDate}')
     public async getUserAttendanceReport(
         @Path() userId: string,
         @Path() startDate: string,
@@ -137,7 +133,6 @@ export class AttendanceController extends Controller {
     // Checkout - record when user leaves
     @Security('jwt', ['attendance:update'])
     @Put('/{id}/checkout')
-    @asyncCatch
     public async checkOut(
         @Path() id: string,
         @Body() data: CheckOutRequest
@@ -152,7 +147,6 @@ export class AttendanceController extends Controller {
     // Update attendance record
     @Security('jwt', ['attendance:update'])
     @Put('/{id}')
-    @asyncCatch
     public async updateAttendance(
         @Path() id: string,
         @Body() data: UpdateAttendanceRequest
@@ -166,7 +160,6 @@ export class AttendanceController extends Controller {
     // Delete attendance record
     @Security('jwt', ['attendance:delete'])
     @Delete('/{id}')
-    @asyncCatch
     public async deleteAttendance(@Path() id: string): Promise<AttendanceSingleResponse> {
         const record = await Attendance.findByPk(id);
         if (!record) return ServiceResponse.failure('Attendance record not found', null, 404);
