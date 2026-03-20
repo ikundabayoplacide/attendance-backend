@@ -25,6 +25,12 @@ export interface AppointmentResponse {
     department?: string;
     appointmentDate?: string;
     appointmentTime?: string;
+    user:{
+        fullName:string;
+        email:string;
+        department:string;
+        phoneNumber:string
+    }
     timeDuration?: string;
     appointmentLocation?: string;
     createdAt?: Date;
@@ -74,7 +80,7 @@ export interface CardResponse{
     id:string;
     cardNumber:string;
     status:string;
-    doneBy:string;
+    doneBy?:string;
     location?:string;
     branch?:string;
     assignedTo?:string;

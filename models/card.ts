@@ -6,9 +6,12 @@ interface CardAttributes{
     cardNumber:string;
     location?:string;
     branch?:string;
-    status:'Activated'|'Unactivated';
-    doneBy:string;
+    description?:string;
+    status:'assigned'|'available'|'maintenance';
+    doneBy?:string;
     assignedTo?:string;
+    assignedAt?:Date;
+    lastUsed?:Date;
     createdAt?:Date;
     updatedAt?:Date;
 }
@@ -18,9 +21,12 @@ class Card extends Model<CardAttributes,Optional<CardAttributes,'id'|'status'|'l
     declare cardNumber:string;
     declare location?:string;
     declare branch?:string;
-    declare status:'Activated'|'Unactivated';
-    declare doneBy:string;
+    declare description?:string;
+    declare status:'assigned'|'available'|'maintenance';
+    declare doneBy?:string;
     declare assignedTo?:string;
+    declare assignedAt?:Date;
+    declare lastUsed?:Date;
     declare readonly createdAt?:Date;
     declare readonly updatedAt?:Date;
 }
@@ -44,15 +50,27 @@ Card.init({
         allowNull:true
     },
     status:{
-        type:DataTypes.ENUM('Activated','Unactivated'),
-        defaultValue:'Unactivated'
+        type:DataTypes.ENUM('assigned','available','maintenance'),
+        defaultValue:'available'
     },
     doneBy:{
         type:DataTypes.UUID,
-        allowNull:false
+        allowNull:true
+    },
+    description:{
+        type:DataTypes.TEXT,
+        allowNull:true
     },
     assignedTo:{
         type:DataTypes.UUID,
+        allowNull:true
+    },
+    assignedAt:{
+        type:DataTypes.DATE,
+        allowNull:true
+    },
+    lastUsed:{
+        type:DataTypes.DATE,
         allowNull:true
     }
 },{

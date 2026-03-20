@@ -11,7 +11,8 @@ interface AppointmentAttributes{
     appointmentDate:string;
     appointmentTime:string;
     timeDuration:string;
-    appointmentLocation:string
+    appointmentLocation:string;
+    note?:string | null;
 }
 
 class Appointment extends Model<AppointmentAttributes, Optional<AppointmentAttributes, 'id'>>{
@@ -24,6 +25,7 @@ class Appointment extends Model<AppointmentAttributes, Optional<AppointmentAttri
     declare appointmentTime?:string;
     declare timeDuration?:string;
     declare appointmentLocation?:string;
+    declare note?:string | null;
     declare status?:'pending'|'confirmed'|'canceled'|'onhold'|'completed';
     declare static associations:{
         users:any;
@@ -76,6 +78,10 @@ class Appointment extends Model<AppointmentAttributes, Optional<AppointmentAttri
             allowNull:false,
             defaultValue:'pending',
         },
+        note:{
+            type:DataTypes.TEXT,
+            allowNull:true,
+        }
     },{
         tableName:'appointments',
         sequelize,

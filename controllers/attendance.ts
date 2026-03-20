@@ -53,7 +53,7 @@ export class AttendanceController extends Controller {
     @Get('/')
     public async getAllAttendance(): Promise<AttendanceListResponse> {
         const records = await Attendance.findAll({
-            include: [{ model: User, as: 'user', attributes: ['fullName', 'email', 'department', 'nationalId', 'category'] }],
+            include: [{ model: User, as: 'user'}],
             order: [['createdAt', 'DESC']]
         });
         return ServiceResponse.success('Attendance records retrieved successfully', records.map(r => r.toJSON()));
@@ -64,7 +64,7 @@ export class AttendanceController extends Controller {
     @Get('/{id}')
     public async getAttendanceById(@Path() id: string): Promise<AttendanceSingleResponse> {
         const record = await Attendance.findByPk(id, {
-            include: [{ model: User, as: 'user', attributes: ['fullName', 'email', 'department', 'nationalId', 'category'] }]
+            include: [{ model: User, as: 'user', attributes: ['fullName', 'email', 'department', 'scannedId', 'category'] }]
         });
         if (!record) return ServiceResponse.failure('Attendance record not found', null, 404);
         return ServiceResponse.success('Attendance record retrieved successfully', record.toJSON());

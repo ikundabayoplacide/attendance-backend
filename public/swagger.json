@@ -1330,8 +1330,7 @@
 				"required": [
 					"id",
 					"cardNumber",
-					"status",
-					"doneBy"
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1403,14 +1402,18 @@
 					"location": {
 						"type": "string"
 					},
+					"description": {
+						"type": "string"
+					},
 					"branch": {
 						"type": "string"
 					},
 					"status": {
 						"type": "string",
 						"enum": [
-							"Activated",
-							"Unactivated"
+							"assigned",
+							"available",
+							"maintenance"
 						]
 					},
 					"doneBy": {
@@ -1418,12 +1421,19 @@
 					},
 					"assignedTo": {
 						"type": "string"
+					},
+					"assignedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"lastUsed": {
+						"type": "string",
+						"format": "date-time"
 					}
 				},
 				"required": [
 					"cardNumber",
-					"status",
-					"doneBy"
+					"status"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -1431,6 +1441,9 @@
 			"UpdateCardRequest": {
 				"properties": {
 					"cardNumber": {
+						"type": "string"
+					},
+					"description": {
 						"type": "string"
 					},
 					"location": {
@@ -1442,8 +1455,9 @@
 					"status": {
 						"type": "string",
 						"enum": [
-							"Activated",
-							"Unactivated"
+							"assigned",
+							"available",
+							"maintenance"
 						]
 					},
 					"doneBy": {
@@ -1451,6 +1465,14 @@
 					},
 					"assignedTo": {
 						"type": "string"
+					},
+					"assignedAt": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"lastUsed": {
+						"type": "string",
+						"format": "date-time"
 					}
 				},
 				"type": "object",
@@ -2110,6 +2132,29 @@
 					"appointmentTime": {
 						"type": "string"
 					},
+					"user": {
+						"properties": {
+							"phoneNumber": {
+								"type": "string"
+							},
+							"department": {
+								"type": "string"
+							},
+							"email": {
+								"type": "string"
+							},
+							"fullName": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"phoneNumber",
+							"department",
+							"email",
+							"fullName"
+						],
+						"type": "object"
+					},
 					"timeDuration": {
 						"type": "string"
 					},
@@ -2127,7 +2172,8 @@
 				},
 				"required": [
 					"id",
-					"userId"
+					"userId",
+					"user"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2229,18 +2275,23 @@
 					},
 					"appointmentLocation": {
 						"type": "string"
+					},
+					"note": {
+						"type": "string"
 					}
 				},
 				"required": [
 					"userId",
 					"purpose",
 					"host",
+					"status",
 					"department",
 					"company",
 					"appointmentDate",
 					"appointmentTime",
 					"timeDuration",
-					"appointmentLocation"
+					"appointmentLocation",
+					"note"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -2282,6 +2333,9 @@
 						"type": "string"
 					},
 					"appointmentLocation": {
+						"type": "string"
+					},
+					"note": {
 						"type": "string"
 					}
 				},
@@ -5045,6 +5099,42 @@
 					}
 				],
 				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateAppointment",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceResponse_AppointmentResponse-or-null_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Appointments"
+				],
+				"security": [
+					{
+						"jwt": [
+							"appointment:create"
+						]
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AppointmentCreateAttributes"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/appointments/user/{userId}": {
@@ -5305,81 +5395,6 @@
 					}
 				]
 			},
-			"delete": {
-				"operationId": "DeleteAppointment",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_null_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Appointments"
-				],
-				"security": [
-					{
-						"jwt": [
-							"appointment:delete"
-						]
-					}
-				],
-				"parameters": [
-					{
-						"in": "path",
-						"name": "id",
-						"required": true,
-						"schema": {
-							"type": "string"
-						}
-					}
-				]
-			}
-		},
-		"/api/appointments/create": {
-			"post": {
-				"operationId": "CreateAppointment",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_AppointmentResponse-or-null_"
-								}
-							}
-						}
-					}
-				},
-				"tags": [
-					"Appointments"
-				],
-				"security": [
-					{
-						"jwt": [
-							"appointment:create"
-						]
-					}
-				],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/AppointmentCreateAttributes"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/appointments/{id}/update": {
 			"put": {
 				"operationId": "UpdateAppointment",
 				"responses": {
@@ -5424,6 +5439,41 @@
 						}
 					}
 				}
+			},
+			"delete": {
+				"operationId": "DeleteAppointment",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceResponse_null_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Appointments"
+				],
+				"security": [
+					{
+						"jwt": [
+							"appointment:delete"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/api/appointments/confirm/{id}": {

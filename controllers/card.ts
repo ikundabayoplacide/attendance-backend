@@ -20,19 +20,25 @@ export interface CardSingleResponse {
 export interface CreateCardRequest {
     cardNumber: string;
     location?: string;
+    description?:string;
     branch?: string;
-    status: 'Activated' | 'Unactivated';
-    doneBy: string;
+    status: 'assigned' | 'available'|'maintenance';
+    doneBy?: string;
     assignedTo?: string;
+    assignedAt?: Date;
+    lastUsed?: Date;
 }
 
 export interface UpdateCardRequest {
     cardNumber?: string;
+    description?:string;
     location?: string;
     branch?: string;
-    status?: 'Activated' | 'Unactivated';
+    status?: 'assigned' | 'available'|'maintenance';
     doneBy?: string;
     assignedTo?: string;
+    assignedAt?: Date;
+    lastUsed?: Date;
 }
 
 @Route('api/cards')

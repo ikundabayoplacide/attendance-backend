@@ -4,18 +4,23 @@ import { Op } from 'sequelize';
 import { Body, Controller, Delete, Get, Path, Post, Put, Route, Security, Tags } from 'tsoa';
 import { AppointmentResponse } from '../types/responses';
 import Appointment from '../models/appointment';
+import User from '../models/user';
+
+const userAttributes = ['fullName', 'email', 'department', 'phoneNumber'];
+const userInclude = [{ model: User, as: 'user', attributes: userAttributes }];
 
 export interface AppointmentCreateAttributes {
     userId: string;
     purpose: string;
     host: string;
-    status?: 'pending'|'confirmed'|'canceled'|'onhold'|'completed';
+    status: 'pending'|'confirmed'|'canceled'|'onhold'|'completed';
     department: string;
     company:string;
     appointmentDate: string;
     appointmentTime: string;
     timeDuration: string;
     appointmentLocation: string;
+    note:string
 }
 
 export interface UpdateAppointmentAttributes {
@@ -29,6 +34,7 @@ export interface UpdateAppointmentAttributes {
     appointmentTime?: string;
     timeDuration?: string;
     appointmentLocation?: string;
+    note?:string
 }
 
 @Route('api/appointments')
@@ -38,8 +44,8 @@ export class appointmentController extends Controller {
     @Get('/')
     @asyncCatch
     public async getAllAppointments(): Promise<ServiceResponse<AppointmentResponse[]>> {
-        const appointments = await Appointment.findAll({ order: [['createdAt', 'DESC']] });
-        return ServiceResponse.success('Appointments retrieved successfully', appointments, 200);
+        const appointments = await Appointment.findAll({ include: userInclude, order: [['createdAt', 'DESC']] });
+        return ServiceResponse.success('Appointments retrieved successfully', appointments as unknown as AppointmentResponse[], 200);
     }
 
     // Get appointments by user ID
@@ -48,12 +54,11 @@ export class appointmentController extends Controller {
     @asyncCatch
     public async getAppointmentsByUserId(@Path() userId: string): Promise<ServiceResponse<AppointmentResponse[]>> {
         const appointments = await Appointment.findAll({
-            where: {
-                userId: userId
-            },
+            where: { userId },
+            include: userInclude,
             order: [['createdAt', 'DESC']]
         });
-        return ServiceResponse.success('Appointments retrieved successfully', appointments, 200);
+        return ServiceResponse.success('Appointments retrieved successfully', appointments as unknown as AppointmentResponse[], 200);
     }
 
     //Get appointments by date
@@ -62,12 +67,11 @@ export class appointmentController extends Controller {
     @asyncCatch
     public async getAppointmentsByDate(@Path() date: string): Promise<ServiceResponse<AppointmentResponse[]>> {
         const appointments = await Appointment.findAll({
-            where: {
-                appointmentDate: date
-            },
+            where: { appointmentDate: date },
+            include: userInclude,
             order: [['createdAt', 'DESC']]
         });
-        return ServiceResponse.success('Appointments retrieved successfully', appointments, 200);
+        return ServiceResponse.success('Appointments retrieved successfully', appointments as unknown as AppointmentResponse[], 200);
     }
 
     //get appointments by department
@@ -76,14 +80,11 @@ export class appointmentController extends Controller {
     @asyncCatch
     public async getAppointmentsByDepartment(@Path() department: string): Promise<ServiceResponse<AppointmentResponse[]>> {
         const appointments = await Appointment.findAll({
-            where: {
-                department: {
-                    [Op.iLike]: `%${department}%`
-                }
-            },
+            where: { department: { [Op.iLike]: `%${department}%` } },
+            include: userInclude,
             order: [['createdAt', 'DESC']]
         });
-        return ServiceResponse.success('Appointments retrieved successfully', appointments, 200);
+        return ServiceResponse.success('Appointments retrieved successfully', appointments as unknown as AppointmentResponse[], 200);
     }
 
     //Get appointments by host
@@ -92,14 +93,11 @@ export class appointmentController extends Controller {
     @asyncCatch
     public async getAppointmentsByHost(@Path() host: string): Promise<ServiceResponse<AppointmentResponse[]>> {
         const appointments = await Appointment.findAll({
-            where: {
-                host: {
-                    [Op.iLike]: `%${host}%`
-                }
-            },
+            where: { host: { [Op.iLike]: `%${host}%` } },
+            include: userInclude,
             order: [['createdAt', 'DESC']]
         });
-        return ServiceResponse.success('Appointments retrieved successfully', appointments, 200);
+        return ServiceResponse.success('Appointments retrieved successfully', appointments as unknown as AppointmentResponse[], 200);
     }
 
     //get appointments by time
@@ -108,12 +106,11 @@ export class appointmentController extends Controller {
     @asyncCatch
     public async getAppointmentsByTime(@Path() time: string): Promise<ServiceResponse<AppointmentResponse[]>> {
         const appointments = await Appointment.findAll({
-            where: {
-                appointmentTime: time
-            },
+            where: { appointmentTime: time },
+            include: userInclude,
             order: [['createdAt', 'DESC']]
         });
-        return ServiceResponse.success('Appointments retrieved successfully', appointments, 200);
+        return ServiceResponse.success('Appointments retrieved successfully', appointments as unknown as AppointmentResponse[], 200);
     }
 
     //Get appointment by Location
@@ -122,14 +119,11 @@ export class appointmentController extends Controller {
     @asyncCatch
     public async getAppointmentsByLocation(@Path() location: string): Promise<ServiceResponse<AppointmentResponse[]>> {
         const appointments = await Appointment.findAll({
-            where: {
-                appointmentLocation: {
-                    [Op.iLike]: `%${location}%`
-                }
-            },
+            where: { appointmentLocation: { [Op.iLike]: `%${location}%` } },
+            include: userInclude,
             order: [['createdAt', 'DESC']]
         });
-        return ServiceResponse.success('Appointments retrieved successfully', appointments, 200);
+        return ServiceResponse.success('Appointments retrieved successfully', appointments as unknown as AppointmentResponse[], 200);
     }
 
     //Get appointment by its Id
@@ -137,27 +131,28 @@ export class appointmentController extends Controller {
     @Get('/:id')
     @asyncCatch
     public async getAppointmentById(@Path() id: string): Promise<ServiceResponse<AppointmentResponse | null>> {
-        const appointment = await Appointment.findByPk(id);
+        const appointment = await Appointment.findByPk(id, { include: userInclude });
         if (!appointment) {
             return ServiceResponse.failure('Appointment not found', null, 404);
         }
-        return ServiceResponse.success('Appointment retrieved successfully', appointment, 200);
+        return ServiceResponse.success('Appointment retrieved successfully', appointment as unknown as AppointmentResponse, 200);
     }
+
  // create appointment
     @Security('jwt', ['appointment:create'])
-    @Post('/create')
+    @Post('/')
     @asyncCatch
     public async createAppointment(@Body() data: AppointmentCreateAttributes): Promise<ServiceResponse<AppointmentResponse | null>> {
         const appointment = await Appointment.create({
             ...data,
             status: data.status ?? 'pending'
         });
-        return ServiceResponse.success('Appointment created successfully', appointment, 201);
+        return ServiceResponse.success('Appointment created successfully', appointment as unknown as AppointmentResponse, 201);
     }
 
     //update appointment 
     @Security('jwt',['appointment:update'])
-    @Put('/{id}/update')
+    @Put('/{id}')
     @asyncCatch
     public async updateAppointment(
         @Path() id: string,
@@ -168,8 +163,9 @@ export class appointmentController extends Controller {
             return ServiceResponse.failure('Appointment not found', null, 404);
         }
         await appointment.update(data);
-        return ServiceResponse.success('Appointment updated successfully', appointment, 200);
+        return ServiceResponse.success('Appointment updated successfully', appointment as unknown as AppointmentResponse, 200);
     }
+
     //confim appointment
     @Security('jwt', ['appointment:update'])
     @Put('/confirm/{id}')
@@ -182,7 +178,7 @@ export class appointmentController extends Controller {
             return ServiceResponse.failure('Appointment not found', null, 404);
         }
         await appointment.update({ status: 'confirmed' });
-        return ServiceResponse.success('Appointment confirmed successfully', appointment, 200);
+        return ServiceResponse.success('Appointment confirmed successfully', appointment as unknown as AppointmentResponse, 200);
     }
 
     //cancel appointment
@@ -197,7 +193,7 @@ export class appointmentController extends Controller {
             return ServiceResponse.failure('Appointment not found', null, 404);
         }
         await appointment.update({ status: 'canceled' });
-        return ServiceResponse.success('Appointment canceled successfully', appointment, 200);
+        return ServiceResponse.success('Appointment canceled successfully', appointment as unknown as AppointmentResponse, 200);
     }
 
     //onhold appointment
@@ -212,7 +208,7 @@ export class appointmentController extends Controller {
             return ServiceResponse.failure('Appointment not found', null, 404);
         }
         await appointment.update({ status: 'onhold' });
-        return ServiceResponse.success('Appointment put on hold successfully', appointment, 200);
+        return ServiceResponse.success('Appointment put on hold successfully', appointment as unknown as AppointmentResponse, 200);
     }
 
     //complete appointment
@@ -227,7 +223,7 @@ export class appointmentController extends Controller {
             return ServiceResponse.failure('Appointment not found', null, 404);
         }
         await appointment.update({ status: 'completed' });
-        return ServiceResponse.success('Appointment completed successfully', appointment, 200);
+        return ServiceResponse.success('Appointment completed successfully', appointment as unknown as AppointmentResponse, 200);
     }
 
     //delete appointment
@@ -245,5 +241,3 @@ export class appointmentController extends Controller {
         return ServiceResponse.success('Appointment deleted successfully', null, 200);
     }
 }
-
-
