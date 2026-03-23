@@ -30,6 +30,8 @@ export interface UpdateAppointmentAttributes {
     host?: string;
     department?: string;
     company?:string;
+    cancelReason?:string;
+    reasonToReschedule?:string;
     appointmentDate?: string;
     appointmentTime?: string;
     timeDuration?: string;
@@ -186,13 +188,13 @@ export class appointmentController extends Controller {
     @Put('/cancel/{id}')
     @asyncCatch
     public async cancelAppointment(
-        @Path() id: string
+        @Path() id: string, @Body() body: { cancelReason: string }
     ): Promise<ServiceResponse<AppointmentResponse | null>> {
         const appointment = await Appointment.findByPk(id);
         if (!appointment) {
             return ServiceResponse.failure('Appointment not found', null, 404);
         }
-        await appointment.update({ status: 'canceled' });
+        await appointment.update({ status: 'canceled',cancelReason:body.cancelReason});
         return ServiceResponse.success('Appointment canceled successfully', appointment as unknown as AppointmentResponse, 200);
     }
 
@@ -211,6 +213,19 @@ export class appointmentController extends Controller {
         return ServiceResponse.success('Appointment put on hold successfully', appointment as unknown as AppointmentResponse, 200);
     }
 
+    // Reschedule appointment
+    @Security('jwt',['appointment:update'])
+    @Put('/reschedule/{id}')
+    @asyncCatch
+    public async rescheduleAppointment(@Path() id:string,@Body() data: { appointmentDate: string; appointmentTime: string; timeDuration: string;appointmentLocation:string; reasonToReschedule:string }
+    ):Promise<ServiceResponse<AppointmentResponse|null>>{
+        const appointment = await Appointment.findByPk(id);
+        if (!appointment) {
+            return ServiceResponse.failure('Appointment not found', null, 404);
+        }
+        await appointment.update({ appointmentDate:data.appointmentDate, appointmentTime:data.appointmentTime,timeDuration:data.timeDuration,appointmentLocation:data.appointmentLocation,reasonToReschedule:data.reasonToReschedule  });
+        return ServiceResponse.success('Appointment rescheduled successfully', appointment as unknown as AppointmentResponse, 200);
+    }
     //complete appointment
     @Security('jwt', ['appointment:update'])
     @Put('/complete/{id}')

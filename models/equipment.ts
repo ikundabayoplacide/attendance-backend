@@ -15,7 +15,7 @@ interface EquipmentAttributes {
 
 
 
-class Equipements extends Model<EquipmentAttributes,Optional<EquipmentAttributes,'id'|'createdAt'|'updatedAt'>> implements EquipmentAttributes{
+class Equipments extends Model<EquipmentAttributes,Optional<EquipmentAttributes,'id'|'createdAt'|'updatedAt'>> implements EquipmentAttributes{
     public id!:string;
     public name!:string;
     public description!:string;
@@ -30,7 +30,7 @@ class Equipements extends Model<EquipmentAttributes,Optional<EquipmentAttributes
     };
 }
 
-Equipements.init({
+Equipments.init({
     id:{
         type:DataTypes.UUID,
         defaultValue:DataTypes.UUIDV4,
@@ -80,7 +80,7 @@ Equipements.init({
     sequelize,
     timestamps:true,
     paranoid:false,
-    modelName:'Equipements',
+    modelName:'Equipments',
 });
 
-export default Equipements;
+export default Equipments;

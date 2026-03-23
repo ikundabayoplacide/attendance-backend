@@ -8,6 +8,8 @@ interface AppointmentAttributes{
     host:string;
     status:'pending'|'confirmed'|'canceled'|'onhold'|'completed';
     department:string;
+    cancelReason?:string | null;
+    reasonToReschedule?:string | null;
     appointmentDate:string;
     appointmentTime:string;
     timeDuration:string;
@@ -19,6 +21,8 @@ class Appointment extends Model<AppointmentAttributes, Optional<AppointmentAttri
     declare id:string;
     declare userId:string;
     declare purpose?:string;
+    declare cancelReason?:string;
+    declare reasonToReschedule?:string | null;
     declare host?:string;
     declare department?:string;
     declare appointmentDate?:string;
@@ -71,6 +75,14 @@ class Appointment extends Model<AppointmentAttributes, Optional<AppointmentAttri
         },
         appointmentLocation:{
             type:DataTypes.STRING,
+            allowNull:true,
+        },
+        cancelReason:{
+            type:DataTypes.TEXT,
+            allowNull:true,
+        },
+        reasonToReschedule:{
+            type:DataTypes.TEXT,
             allowNull:true,
         },
         status:{

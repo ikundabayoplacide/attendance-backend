@@ -23,11 +23,13 @@ export interface AppointmentResponse {
     purpose?: string;
     host?: string;
     department?: string;
+    cancelReason?:string;
+    reasonToReschedule?:string;
     appointmentDate?: string;
     appointmentTime?: string;
     user:{
         fullName:string;
-        email:string;
+        email?:string;
         department:string;
         phoneNumber:string
     }
@@ -51,7 +53,7 @@ export interface EventResponse{
 
 }
 
-export interface EquipementResponse{
+export interface EquipmentResponse{
     id:string;
     name:string;
     description?:string | null;

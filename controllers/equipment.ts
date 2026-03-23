@@ -1,10 +1,10 @@
 import { ServiceResponse } from "../utils/serviceResponse";
 import { asyncCatch } from "../middlewares/errorHandler";
-import { Body, Controller, Delete, Get, Path, Post, Put, Response, Route, Security, Tags } from "tsoa";
-import Equipement from "../models/equipment";
-import { EquipementResponse } from "../types/responses";
+import { Body, Controller, Delete, Get, Patch, Path, Post, Put, Response, Route, Security, Tags } from "tsoa";
+import Equipments from "../models/equipment";
+import { EquipmentResponse } from "../types/responses";
 
-export class EquipementCreateAttributes {
+export class equipmentCreateAttributes {
     declare name: string;
     declare description?: string | null;
     declare serialNumber?: string;
@@ -13,7 +13,7 @@ export class EquipementCreateAttributes {
     declare assignedTo?: string | null;
 }
 
-export class EquipementUpdateAttributes {
+export class equipmentUpdateAttributes {
     declare name?: string;
     declare description?: string | null;
     declare serialNumber?: string | null;
@@ -22,87 +22,104 @@ export class EquipementUpdateAttributes {
     declare assignedTo?: string | null;
 }
 
-@Route('api/equipements')
-@Tags('Equipements')
-export class EquipementController extends Controller {
+@Route('equipments')
+@Tags('Equipments')
+export class equipmentController extends Controller {
 
-    @Security('jwt', ['equipement:read'])
+    @Security('jwt', ['equipment:read'])
     @Get('/')
     @asyncCatch
-    @Response<ServiceResponse<EquipementResponse>>(404, 'Equipements not found')
-    public async getAllEquipements(): Promise<ServiceResponse<EquipementResponse[] | null>> {
-        const equipements = await Equipement.findAll({ order: [['name', 'ASC']] });
-        return ServiceResponse.success('Equipements retrieved successfully', equipements.map((e: Equipement) => e.toJSON() as EquipementResponse));
+    public async getAllEquipments(): Promise<ServiceResponse<EquipmentResponse[] | null>> {
+        const equipments = await Equipments.findAll({ order: [['name', 'ASC']] });
+        return ServiceResponse.success('Equipments retrieved successfully', equipments.map((e: Equipments) => e.toJSON() as EquipmentResponse));
     }
 
-    @Security('jwt', ['equipement:read'])
-    @Get('/{equipementId}')
+    @Security('jwt', ['equipment:read'])
+    @Get('/{equipmentId}')
     @asyncCatch
-    @Response<ServiceResponse<EquipementResponse|null>>(404, 'Equipement not found')
-    public async getEquipementById(@Path() equipementId: string): Promise<ServiceResponse<EquipementResponse | null>> {
-        const equipement = await Equipement.findByPk(equipementId);
-        if (!equipement) {
-            return ServiceResponse.failure('Equipement not found', null, 404);
+    @Response<ServiceResponse<EquipmentResponse | null>>(404, 'equipment not found')
+    public async getEquipmentById(@Path() equipmentId: string): Promise<ServiceResponse<EquipmentResponse | null>> {
+        const found = await Equipments.findByPk(equipmentId);
+        if (!found) {
+            return ServiceResponse.failure('equipment not found', null, 404);
         }
-        return ServiceResponse.success('Equipement retrieved successfully', equipement.toJSON() as EquipementResponse);
+        return ServiceResponse.success('equipment retrieved successfully', found.toJSON() as EquipmentResponse);
     }
 
-    @Security('jwt', ['equipement:create'])
+    @Security('jwt', ['equipment:create'])
     @Post('/')
     @asyncCatch
-    @Response<ServiceResponse<EquipementResponse>>(409, 'Equipement already exists')
-    public async createEquipement(@Body() data: EquipementCreateAttributes): Promise<ServiceResponse<EquipementResponse | null>> {
-        const existingEquipement = await Equipement.findOne({ where: { name: data.name } });
-        if (existingEquipement) {
-            return ServiceResponse.failure('Equipement already exists', null, 409);
+    @Response<ServiceResponse<EquipmentResponse>>(409, 'equipment already exists')
+    public async createEquipment(@Body() data: equipmentCreateAttributes): Promise<ServiceResponse<EquipmentResponse | null>> {
+        const existing = await Equipments.findOne({ where: { name: data.name } });
+        if (existing) {
+            return ServiceResponse.failure('equipment already exists', null, 409);
         }
-        const created = await Equipement.create({ ...data, serialNumber: data.serialNumber ?? null });
-        return ServiceResponse.success('Equipement created successfully', created.toJSON() as EquipementResponse, 201);
+        const created = await Equipments.create({ ...data, serialNumber: data.serialNumber ?? null });
+        return ServiceResponse.success('equipment created successfully', created.toJSON() as EquipmentResponse, 201);
     }
 
-    @Security('jwt', ['equipement:update'])
-    @Put('/{equipementId}')
+    @Security('jwt', ['equipment:update'])
+    @Put('/{equipmentId}')
     @asyncCatch
-    @Response<ServiceResponse<EquipementResponse|null>>(404, 'Equipement not found')
-    public async updateEquipement(
-        @Path() equipementId: string,
-        @Body() data: EquipementUpdateAttributes
-    ): Promise<ServiceResponse<EquipementResponse | null>> {
-        const equipement = await Equipement.findByPk(equipementId);
-        if (!equipement) {
-            return ServiceResponse.failure('Equipement not found', null, 404);
+    @Response<ServiceResponse<EquipmentResponse | null>>(404, 'equipment not found')
+    public async updateEquipment(
+        @Path() equipmentId: string,
+        @Body() data: equipmentUpdateAttributes
+    ): Promise<ServiceResponse<EquipmentResponse | null>> {
+        const found = await Equipments.findByPk(equipmentId);
+        if (!found) {
+            return ServiceResponse.failure('equipment not found', null, 404);
         }
-        await equipement.update(data);
-        return ServiceResponse.success('Equipement updated successfully', equipement.toJSON() as EquipementResponse);
+        await found.update(data);
+        return ServiceResponse.success('equipment updated successfully', found.toJSON() as EquipmentResponse);
     }
 
-    // Assign Equipement to user
-    @Security('jwt', ['equipement:update'])
-    @Put('/{equipementId}/assign')
+    @Security('jwt', ['equipment:update'])
+    @Put('/{equipmentId}/assign')
     @asyncCatch
-    @Response<ServiceResponse<null>>(404, 'Equipement not found')
-    public async assignEquipement(
-        @Path() equipementId: string,
+    @Response<ServiceResponse<null>>(404, 'equipment not found')
+    public async assignEquipment(
+        @Path() equipmentId: string,
         @Body() data: { userId: string }
-    ): Promise<ServiceResponse<EquipementResponse | null>> {
-        const equipement = await Equipement.findByPk(equipementId);
-        if (!equipement) {
-            return ServiceResponse.failure('Equipement not found', null, 404);
+    ): Promise<ServiceResponse<EquipmentResponse | null>> {
+        const found = await Equipments.findByPk(equipmentId);
+        if (!found) {
+            return ServiceResponse.failure('equipment not found', null, 404);
         }
-        await equipement.update({ assignedTo: data.userId, status: 'inuse' });
-        return ServiceResponse.success('Equipement assigned successfully', equipement.toJSON() as EquipementResponse);
+        await found.update({ assignedTo: data.userId, status: 'inuse' });
+        return ServiceResponse.success('equipment assigned successfully', found.toJSON() as EquipmentResponse);
     }
 
-    @Security('jwt', ['equipement:delete'])
-    @Delete('/{equipementId}')
+    @Security('jwt', ['equipment:update'])
+    @Put('/{equipmentId}/return/{userId}')
     @asyncCatch
-    @Response<ServiceResponse<EquipementResponse|null>>(404, 'Equipement not found')
-    public async deleteEquipement(@Path() equipementId: string): Promise<ServiceResponse<null>> {
-        const equipement = await Equipement.findByPk(equipementId);
-        if (!equipement) {
-            return ServiceResponse.failure('Equipement not found', null, 404);
+    @Response<ServiceResponse<EquipmentResponse | null>>(404, 'equipment not found')
+    public async returnEquipment(
+        @Path() equipmentId: string,
+        @Path() userId: string
+    ): Promise<ServiceResponse<EquipmentResponse | null>> {
+        const found = await Equipments.findByPk(equipmentId);
+        if (!found) {
+            return ServiceResponse.failure('equipment not found', null, 404);
         }
-        await equipement.destroy();
-        return ServiceResponse.success('Equipement deleted successfully', null);
+        if (found.assignedTo !== userId) {
+            return ServiceResponse.failure('equipment is not assigned to this user', null, 400);
+        }
+        await found.update({ assignedTo: null, status: 'available' });
+        return ServiceResponse.success('equipment returned successfully', found.toJSON() as EquipmentResponse);
+    }
+
+    @Security('jwt', ['equipment:delete'])
+    @Delete('/{equipmentId}')
+    @asyncCatch
+    @Response<ServiceResponse<EquipmentResponse | null>>(404, 'equipment not found')
+    public async deleteEquipment(@Path() equipmentId: string): Promise<ServiceResponse<null>> {
+        const found = await Equipments.findByPk(equipmentId);
+        if (!found) {
+            return ServiceResponse.failure('equipment not found', null, 404);
+        }
+        await found.destroy();
+        return ServiceResponse.success('equipment deleted successfully', null);
     }
 }

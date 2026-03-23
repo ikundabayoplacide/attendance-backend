@@ -327,6 +327,16 @@
 					},
 					"result": {
 						"properties": {
+							"assignedCardId": {
+								"type": "string",
+								"nullable": true
+							},
+							"equipmentIds": {
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
 							"isNewUser": {
 								"type": "boolean"
 							},
@@ -348,6 +358,8 @@
 							}
 						},
 						"required": [
+							"assignedCardId",
+							"equipmentIds",
 							"isNewUser",
 							"attendance",
 							"user"
@@ -365,6 +377,25 @@
 					"message",
 					"result",
 					"statusCode"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"EquipmentAssignment": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"serialNumber": {
+						"type": "string"
+					},
+					"type": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"serialNumber"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -405,6 +436,15 @@
 						"type": "string"
 					},
 					"nationalId": {
+						"type": "string"
+					},
+					"equipments": {
+						"items": {
+							"$ref": "#/components/schemas/EquipmentAssignment"
+						},
+						"type": "array"
+					},
+					"cardId": {
 						"type": "string"
 					}
 				},
@@ -1104,7 +1144,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"EquipementResponse": {
+			"EquipmentResponse": {
 				"properties": {
 					"id": {
 						"type": "string"
@@ -1148,7 +1188,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ServiceResponse_EquipementResponse-Array-or-null_": {
+			"ServiceResponse_EquipmentResponse-Array-or-null_": {
 				"properties": {
 					"success": {
 						"type": "boolean"
@@ -1158,7 +1198,7 @@
 					},
 					"result": {
 						"items": {
-							"$ref": "#/components/schemas/EquipementResponse"
+							"$ref": "#/components/schemas/EquipmentResponse"
 						},
 						"type": "array",
 						"nullable": true
@@ -1177,7 +1217,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ServiceResponse_EquipementResponse_": {
+			"ServiceResponse_EquipmentResponse-or-null_": {
 				"properties": {
 					"success": {
 						"type": "boolean"
@@ -1188,7 +1228,7 @@
 					"result": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/EquipementResponse"
+								"$ref": "#/components/schemas/EquipmentResponse"
 							}
 						],
 						"nullable": true
@@ -1207,7 +1247,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ServiceResponse_EquipementResponse-or-null_": {
+			"ServiceResponse_EquipmentResponse_": {
 				"properties": {
 					"success": {
 						"type": "boolean"
@@ -1218,7 +1258,7 @@
 					"result": {
 						"allOf": [
 							{
-								"$ref": "#/components/schemas/EquipementResponse"
+								"$ref": "#/components/schemas/EquipmentResponse"
 							}
 						],
 						"nullable": true
@@ -1237,7 +1277,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"EquipementCreateAttributes": {
+			"equipmentCreateAttributes": {
 				"properties": {
 					"name": {
 						"type": "string"
@@ -1267,7 +1307,7 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"EquipementUpdateAttributes": {
+			"equipmentUpdateAttributes": {
 				"properties": {
 					"name": {
 						"type": "string"
@@ -2126,6 +2166,12 @@
 					"department": {
 						"type": "string"
 					},
+					"cancelReason": {
+						"type": "string"
+					},
+					"reasonToReschedule": {
+						"type": "string"
+					},
 					"appointmentDate": {
 						"type": "string"
 					},
@@ -2150,7 +2196,6 @@
 						"required": [
 							"phoneNumber",
 							"department",
-							"email",
 							"fullName"
 						],
 						"type": "object"
@@ -2321,6 +2366,12 @@
 						"type": "string"
 					},
 					"company": {
+						"type": "string"
+					},
+					"cancelReason": {
+						"type": "string"
+					},
+					"reasonToReschedule": {
 						"type": "string"
 					},
 					"appointmentDate": {
@@ -2508,6 +2559,41 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/users/{id}/equipment": {
+			"get": {
+				"operationId": "GetUserEquipment",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Users"
+				],
+				"security": [
+					{
+						"jwt": [
+							"user:read"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/api/users/{id}/activate": {
@@ -3921,74 +4007,64 @@
 				]
 			}
 		},
-		"/api/equipements": {
+		"/equipments": {
 			"get": {
-				"operationId": "GetAllEquipements",
+				"operationId": "GetAllEquipments",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-Array-or-null_"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "Equipements not found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-Array-or-null_"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Equipements"
+					"Equipments"
 				],
 				"security": [
 					{
 						"jwt": [
-							"equipement:read"
+							"equipment:read"
 						]
 					}
 				],
 				"parameters": []
 			},
 			"post": {
-				"operationId": "CreateEquipement",
+				"operationId": "CreateEquipment",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-or-null_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
 								}
 							}
 						}
 					},
 					"409": {
-						"description": "Equipement already exists",
+						"description": "equipment already exists",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse_"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Equipements"
+					"Equipments"
 				],
 				"security": [
 					{
 						"jwt": [
-							"equipement:create"
+							"equipment:create"
 						]
 					}
 				],
@@ -3998,52 +4074,52 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/EquipementCreateAttributes"
+								"$ref": "#/components/schemas/equipmentCreateAttributes"
 							}
 						}
 					}
 				}
 			}
 		},
-		"/api/equipements/{equipementId}": {
+		"/equipments/{equipmentId}": {
 			"get": {
-				"operationId": "GetEquipementById",
+				"operationId": "GetEquipmentById",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-or-null_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
 								}
 							}
 						}
 					},
 					"404": {
-						"description": "Equipement not found",
+						"description": "equipment not found",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-or-null_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Equipements"
+					"Equipments"
 				],
 				"security": [
 					{
 						"jwt": [
-							"equipement:read"
+							"equipment:read"
 						]
 					}
 				],
 				"parameters": [
 					{
 						"in": "path",
-						"name": "equipementId",
+						"name": "equipmentId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -4052,43 +4128,43 @@
 				]
 			},
 			"put": {
-				"operationId": "UpdateEquipement",
+				"operationId": "UpdateEquipment",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-or-null_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
 								}
 							}
 						}
 					},
 					"404": {
-						"description": "Equipement not found",
+						"description": "equipment not found",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-or-null_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Equipements"
+					"Equipments"
 				],
 				"security": [
 					{
 						"jwt": [
-							"equipement:update"
+							"equipment:update"
 						]
 					}
 				],
 				"parameters": [
 					{
 						"in": "path",
-						"name": "equipementId",
+						"name": "equipmentId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -4100,14 +4176,14 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/EquipementUpdateAttributes"
+								"$ref": "#/components/schemas/equipmentUpdateAttributes"
 							}
 						}
 					}
 				}
 			},
 			"delete": {
-				"operationId": "DeleteEquipement",
+				"operationId": "DeleteEquipment",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -4120,30 +4196,30 @@
 						}
 					},
 					"404": {
-						"description": "Equipement not found",
+						"description": "equipment not found",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-or-null_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
 								}
 							}
 						}
 					}
 				},
 				"tags": [
-					"Equipements"
+					"Equipments"
 				],
 				"security": [
 					{
 						"jwt": [
-							"equipement:delete"
+							"equipment:delete"
 						]
 					}
 				],
 				"parameters": [
 					{
 						"in": "path",
-						"name": "equipementId",
+						"name": "equipmentId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -4152,22 +4228,22 @@
 				]
 			}
 		},
-		"/api/equipements/{equipementId}/assign": {
+		"/equipments/{equipmentId}/assign": {
 			"put": {
-				"operationId": "AssignEquipement",
+				"operationId": "AssignEquipment",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/ServiceResponse_EquipementResponse-or-null_"
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
 								}
 							}
 						}
 					},
 					"404": {
-						"description": "Equipement not found",
+						"description": "equipment not found",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4178,19 +4254,19 @@
 					}
 				},
 				"tags": [
-					"Equipements"
+					"Equipments"
 				],
 				"security": [
 					{
 						"jwt": [
-							"equipement:update"
+							"equipment:update"
 						]
 					}
 				],
 				"parameters": [
 					{
 						"in": "path",
-						"name": "equipementId",
+						"name": "equipmentId",
 						"required": true,
 						"schema": {
 							"type": "string"
@@ -4215,6 +4291,61 @@
 						}
 					}
 				}
+			}
+		},
+		"/equipments/{equipmentId}/return/{userId}": {
+			"put": {
+				"operationId": "ReturnEquipment",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "equipment not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceResponse_EquipmentResponse-or-null_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Equipments"
+				],
+				"security": [
+					{
+						"jwt": [
+							"equipment:update"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "equipmentId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"in": "path",
+						"name": "userId",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		},
 		"/api/cards": {
@@ -4281,12 +4412,50 @@
 				}
 			}
 		},
+		"/api/cards/available": {
+			"get": {
+				"operationId": "GetAvailableCards",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardListResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:read"
+						]
+					}
+				],
+				"parameters": []
+			}
+		},
 		"/api/cards/{id}": {
 			"get": {
 				"operationId": "GetCard",
 				"responses": {
 					"200": {
 						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Card not found",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4322,6 +4491,16 @@
 				"responses": {
 					"200": {
 						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Card not found",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4374,6 +4553,16 @@
 								}
 							}
 						}
+					},
+					"404": {
+						"description": "Card not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
 					}
 				},
 				"tags": [
@@ -4398,12 +4587,22 @@
 				]
 			}
 		},
-		"/api/cards/assign/{id}": {
+		"/api/cards/{id}/assign": {
 			"put": {
 				"operationId": "AssignCard",
 				"responses": {
 					"200": {
 						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Card not found",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -4420,6 +4619,71 @@
 					{
 						"jwt": [
 							"card:assign"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"userId": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"userId"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/cards/{id}/return": {
+			"put": {
+				"operationId": "ReturnCard",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Card not found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CardSingleResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Cards"
+				],
+				"security": [
+					{
+						"jwt": [
+							"card:update"
 						]
 					}
 				],
@@ -5547,7 +5811,25 @@
 							"type": "string"
 						}
 					}
-				]
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"cancelReason": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"cancelReason"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/appointments/onhold/{id}": {
@@ -5585,6 +5867,77 @@
 						}
 					}
 				]
+			}
+		},
+		"/api/appointments/reschedule/{id}": {
+			"put": {
+				"operationId": "RescheduleAppointment",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ServiceResponse_AppointmentResponse-or-null_"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Appointments"
+				],
+				"security": [
+					{
+						"jwt": [
+							"appointment:update"
+						]
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"reasonToReschedule": {
+										"type": "string"
+									},
+									"appointmentLocation": {
+										"type": "string"
+									},
+									"timeDuration": {
+										"type": "string"
+									},
+									"appointmentTime": {
+										"type": "string"
+									},
+									"appointmentDate": {
+										"type": "string"
+									}
+								},
+								"required": [
+									"reasonToReschedule",
+									"appointmentLocation",
+									"timeDuration",
+									"appointmentTime",
+									"appointmentDate"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
 			}
 		},
 		"/api/appointments/complete/{id}": {

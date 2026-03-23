@@ -82,6 +82,9 @@ Handover.belongsToMany(User,{
 Card.belongsTo(User,{as:'assignedUser', foreignKey:'assignedTo'})
 User.hasOne(Card,{as:'card', foreignKey:'assignedTo'})
 
+User.hasMany(Equipements, { foreignKey: 'assignedTo', as: 'equipments' });
+Equipements.belongsTo(User, { foreignKey: 'assignedTo', as: 'equipmentOwner' });
+
 User.hasMany(Appointment, { foreignKey: 'userId', as: 'appointments' });
 Appointment.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 

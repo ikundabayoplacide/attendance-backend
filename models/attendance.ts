@@ -53,7 +53,7 @@ Attendance.init({
         allowNull: true,
     },
     hoster:{
-        type:DataTypes.UUID,
+        type:DataTypes.STRING,
         allowNull:true,
     },
     badge:{

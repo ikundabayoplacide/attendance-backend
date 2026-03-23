@@ -48,6 +48,7 @@ interface IUserAttributes {
     personalInChargeEmail?: string;
     personalInChargeRelation?: string;
     personalInChargeOtherDetails?: string;
+    smoking?:boolean
 
   
     createdAt?: Date;
@@ -106,6 +107,7 @@ class User extends Model<IUserAttributes, Optional<IUserAttributes, 'id'|'status
     declare personalInChargeEmail?: string;
     declare personalInChargeRelation?: string;
     declare personalInChargeOtherDetails?: string | undefined;
+    declare smoking?: boolean;
   
     declare readonly createdAt?: Date;
     declare readonly updatedAt?: Date;
@@ -134,8 +136,13 @@ User.init({
         type: DataTypes.STRING,
         allowNull:true,
         validate:{
-            isEmail:true,
-            notEmpty:true,
+            isEmailOrNull(value: string | null) {
+                if (value !== null && value !== undefined && value !== '') {
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                        throw new Error('Must be a valid email address');
+                    }
+                }
+            }
         },
     },
     phoneNumber:{
@@ -288,8 +295,13 @@ User.init({
     personalInChargeOtherDetails:{
         type: DataTypes.STRING,
         allowNull:true,
-    }
-    },{
+    },
+    smoking:{
+        type:DataTypes.BOOLEAN,
+        allowNull:true,
+        defaultValue:false,
+    },
+},{
         tableName:'users',
         sequelize,
         timestamps:true,

@@ -14,7 +14,7 @@ import { HandoverController } from './../controllers/handover';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { EventController } from './../controllers/event';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { EquipementController } from './../controllers/equipment';
+import { equipmentController } from './../controllers/equipment';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { CardController } from './../controllers/card';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -145,8 +145,18 @@ const models: TsoaRoute.Models = {
         "properties": {
             "success": {"dataType":"boolean","required":true},
             "message": {"dataType":"string","required":true},
-            "result": {"dataType":"union","subSchemas":[{"dataType":"nestedObjectLiteral","nestedProperties":{"isNewUser":{"dataType":"boolean","required":true},"attendance":{"dataType":"union","subSchemas":[{"ref":"AttendanceInfo"},{"dataType":"enum","enums":[null]}],"required":true},"user":{"dataType":"union","subSchemas":[{"ref":"IUserAttributes"},{"dataType":"enum","enums":[null]}],"required":true}}},{"dataType":"enum","enums":[null]}],"required":true},
+            "result": {"dataType":"union","subSchemas":[{"dataType":"nestedObjectLiteral","nestedProperties":{"assignedCardId":{"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},"equipmentIds":{"dataType":"array","array":{"dataType":"string"},"required":true},"isNewUser":{"dataType":"boolean","required":true},"attendance":{"dataType":"union","subSchemas":[{"ref":"AttendanceInfo"},{"dataType":"enum","enums":[null]}],"required":true},"user":{"dataType":"union","subSchemas":[{"ref":"IUserAttributes"},{"dataType":"enum","enums":[null]}],"required":true}}},{"dataType":"enum","enums":[null]}],"required":true},
             "statusCode": {"dataType":"double","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EquipmentAssignment": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "serialNumber": {"dataType":"string","required":true},
+            "type": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -166,6 +176,8 @@ const models: TsoaRoute.Models = {
             "company": {"dataType":"string"},
             "department": {"dataType":"string"},
             "nationalId": {"dataType":"string"},
+            "equipments": {"dataType":"array","array":{"dataType":"refObject","ref":"EquipmentAssignment"}},
+            "cardId": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -450,7 +462,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "EquipementResponse": {
+    "EquipmentResponse": {
         "dataType": "refObject",
         "properties": {
             "id": {"dataType":"string","required":true},
@@ -466,40 +478,40 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ServiceResponse_EquipementResponse-Array-or-null_": {
+    "ServiceResponse_EquipmentResponse-Array-or-null_": {
         "dataType": "refObject",
         "properties": {
             "success": {"dataType":"boolean","required":true},
             "message": {"dataType":"string","required":true},
-            "result": {"dataType":"union","subSchemas":[{"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"EquipementResponse"}},{"dataType":"enum","enums":[null]}]},{"dataType":"enum","enums":[null]}],"required":true},
+            "result": {"dataType":"union","subSchemas":[{"dataType":"union","subSchemas":[{"dataType":"array","array":{"dataType":"refObject","ref":"EquipmentResponse"}},{"dataType":"enum","enums":[null]}]},{"dataType":"enum","enums":[null]}],"required":true},
             "statusCode": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ServiceResponse_EquipementResponse_": {
+    "ServiceResponse_EquipmentResponse-or-null_": {
         "dataType": "refObject",
         "properties": {
             "success": {"dataType":"boolean","required":true},
             "message": {"dataType":"string","required":true},
-            "result": {"dataType":"union","subSchemas":[{"ref":"EquipementResponse"},{"dataType":"enum","enums":[null]}],"required":true},
+            "result": {"dataType":"union","subSchemas":[{"dataType":"union","subSchemas":[{"ref":"EquipmentResponse"},{"dataType":"enum","enums":[null]}]},{"dataType":"enum","enums":[null]}],"required":true},
             "statusCode": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ServiceResponse_EquipementResponse-or-null_": {
+    "ServiceResponse_EquipmentResponse_": {
         "dataType": "refObject",
         "properties": {
             "success": {"dataType":"boolean","required":true},
             "message": {"dataType":"string","required":true},
-            "result": {"dataType":"union","subSchemas":[{"dataType":"union","subSchemas":[{"ref":"EquipementResponse"},{"dataType":"enum","enums":[null]}]},{"dataType":"enum","enums":[null]}],"required":true},
+            "result": {"dataType":"union","subSchemas":[{"ref":"EquipmentResponse"},{"dataType":"enum","enums":[null]}],"required":true},
             "statusCode": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "EquipementCreateAttributes": {
+    "equipmentCreateAttributes": {
         "dataType": "refObject",
         "properties": {
             "name": {"dataType":"string","required":true},
@@ -512,7 +524,7 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "EquipementUpdateAttributes": {
+    "equipmentUpdateAttributes": {
         "dataType": "refObject",
         "properties": {
             "name": {"dataType":"string"},
@@ -778,9 +790,11 @@ const models: TsoaRoute.Models = {
             "purpose": {"dataType":"string"},
             "host": {"dataType":"string"},
             "department": {"dataType":"string"},
+            "cancelReason": {"dataType":"string"},
+            "reasonToReschedule": {"dataType":"string"},
             "appointmentDate": {"dataType":"string"},
             "appointmentTime": {"dataType":"string"},
-            "user": {"dataType":"nestedObjectLiteral","nestedProperties":{"phoneNumber":{"dataType":"string","required":true},"department":{"dataType":"string","required":true},"email":{"dataType":"string","required":true},"fullName":{"dataType":"string","required":true}},"required":true},
+            "user": {"dataType":"nestedObjectLiteral","nestedProperties":{"phoneNumber":{"dataType":"string","required":true},"department":{"dataType":"string","required":true},"email":{"dataType":"string"},"fullName":{"dataType":"string","required":true}},"required":true},
             "timeDuration": {"dataType":"string"},
             "appointmentLocation": {"dataType":"string"},
             "createdAt": {"dataType":"datetime"},
@@ -838,6 +852,8 @@ const models: TsoaRoute.Models = {
             "host": {"dataType":"string"},
             "department": {"dataType":"string"},
             "company": {"dataType":"string"},
+            "cancelReason": {"dataType":"string"},
+            "reasonToReschedule": {"dataType":"string"},
             "appointmentDate": {"dataType":"string"},
             "appointmentTime": {"dataType":"string"},
             "timeDuration": {"dataType":"string"},
@@ -977,6 +993,37 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'updateUser',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsUserController_getUserEquipment: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+        };
+        app.get('/api/users/:id/equipment',
+            authenticateMiddleware([{"jwt":["user:read"]}]),
+            ...(fetchMiddlewares<RequestHandler>(UserController)),
+            ...(fetchMiddlewares<RequestHandler>(UserController.prototype.getUserEquipment)),
+
+            async function UserController_getUserEquipment(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsUserController_getUserEquipment, request, response });
+
+                const controller = new UserController();
+
+              await templateService.apiHandler({
+                methodName: 'getUserEquipment',
                 controller,
                 response,
                 next,
@@ -1921,25 +1968,25 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsEquipementController_getAllEquipements: Record<string, TsoaRoute.ParameterSchema> = {
+        const argsequipmentController_getAllEquipments: Record<string, TsoaRoute.ParameterSchema> = {
         };
-        app.get('/api/equipements',
-            authenticateMiddleware([{"jwt":["equipement:read"]}]),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController)),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController.prototype.getAllEquipements)),
+        app.get('/equipments',
+            authenticateMiddleware([{"jwt":["equipment:read"]}]),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController)),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController.prototype.getAllEquipments)),
 
-            async function EquipementController_getAllEquipements(request: ExRequest, response: ExResponse, next: any) {
+            async function equipmentController_getAllEquipments(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsEquipementController_getAllEquipements, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsequipmentController_getAllEquipments, request, response });
 
-                const controller = new EquipementController();
+                const controller = new equipmentController();
 
               await templateService.apiHandler({
-                methodName: 'getAllEquipements',
+                methodName: 'getAllEquipments',
                 controller,
                 response,
                 next,
@@ -1951,26 +1998,26 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsEquipementController_getEquipementById: Record<string, TsoaRoute.ParameterSchema> = {
-                equipementId: {"in":"path","name":"equipementId","required":true,"dataType":"string"},
+        const argsequipmentController_getEquipmentById: Record<string, TsoaRoute.ParameterSchema> = {
+                equipmentId: {"in":"path","name":"equipmentId","required":true,"dataType":"string"},
         };
-        app.get('/api/equipements/:equipementId',
-            authenticateMiddleware([{"jwt":["equipement:read"]}]),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController)),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController.prototype.getEquipementById)),
+        app.get('/equipments/:equipmentId',
+            authenticateMiddleware([{"jwt":["equipment:read"]}]),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController)),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController.prototype.getEquipmentById)),
 
-            async function EquipementController_getEquipementById(request: ExRequest, response: ExResponse, next: any) {
+            async function equipmentController_getEquipmentById(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsEquipementController_getEquipementById, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsequipmentController_getEquipmentById, request, response });
 
-                const controller = new EquipementController();
+                const controller = new equipmentController();
 
               await templateService.apiHandler({
-                methodName: 'getEquipementById',
+                methodName: 'getEquipmentById',
                 controller,
                 response,
                 next,
@@ -1982,26 +2029,26 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsEquipementController_createEquipement: Record<string, TsoaRoute.ParameterSchema> = {
-                data: {"in":"body","name":"data","required":true,"ref":"EquipementCreateAttributes"},
+        const argsequipmentController_createEquipment: Record<string, TsoaRoute.ParameterSchema> = {
+                data: {"in":"body","name":"data","required":true,"ref":"equipmentCreateAttributes"},
         };
-        app.post('/api/equipements',
-            authenticateMiddleware([{"jwt":["equipement:create"]}]),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController)),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController.prototype.createEquipement)),
+        app.post('/equipments',
+            authenticateMiddleware([{"jwt":["equipment:create"]}]),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController)),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController.prototype.createEquipment)),
 
-            async function EquipementController_createEquipement(request: ExRequest, response: ExResponse, next: any) {
+            async function equipmentController_createEquipment(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsEquipementController_createEquipement, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsequipmentController_createEquipment, request, response });
 
-                const controller = new EquipementController();
+                const controller = new equipmentController();
 
               await templateService.apiHandler({
-                methodName: 'createEquipement',
+                methodName: 'createEquipment',
                 controller,
                 response,
                 next,
@@ -2013,27 +2060,27 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsEquipementController_updateEquipement: Record<string, TsoaRoute.ParameterSchema> = {
-                equipementId: {"in":"path","name":"equipementId","required":true,"dataType":"string"},
-                data: {"in":"body","name":"data","required":true,"ref":"EquipementUpdateAttributes"},
+        const argsequipmentController_updateEquipment: Record<string, TsoaRoute.ParameterSchema> = {
+                equipmentId: {"in":"path","name":"equipmentId","required":true,"dataType":"string"},
+                data: {"in":"body","name":"data","required":true,"ref":"equipmentUpdateAttributes"},
         };
-        app.put('/api/equipements/:equipementId',
-            authenticateMiddleware([{"jwt":["equipement:update"]}]),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController)),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController.prototype.updateEquipement)),
+        app.put('/equipments/:equipmentId',
+            authenticateMiddleware([{"jwt":["equipment:update"]}]),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController)),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController.prototype.updateEquipment)),
 
-            async function EquipementController_updateEquipement(request: ExRequest, response: ExResponse, next: any) {
+            async function equipmentController_updateEquipment(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsEquipementController_updateEquipement, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsequipmentController_updateEquipment, request, response });
 
-                const controller = new EquipementController();
+                const controller = new equipmentController();
 
               await templateService.apiHandler({
-                methodName: 'updateEquipement',
+                methodName: 'updateEquipment',
                 controller,
                 response,
                 next,
@@ -2045,27 +2092,27 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsEquipementController_assignEquipement: Record<string, TsoaRoute.ParameterSchema> = {
-                equipementId: {"in":"path","name":"equipementId","required":true,"dataType":"string"},
+        const argsequipmentController_assignEquipment: Record<string, TsoaRoute.ParameterSchema> = {
+                equipmentId: {"in":"path","name":"equipmentId","required":true,"dataType":"string"},
                 data: {"in":"body","name":"data","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"userId":{"dataType":"string","required":true}}},
         };
-        app.put('/api/equipements/:equipementId/assign',
-            authenticateMiddleware([{"jwt":["equipement:update"]}]),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController)),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController.prototype.assignEquipement)),
+        app.put('/equipments/:equipmentId/assign',
+            authenticateMiddleware([{"jwt":["equipment:update"]}]),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController)),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController.prototype.assignEquipment)),
 
-            async function EquipementController_assignEquipement(request: ExRequest, response: ExResponse, next: any) {
+            async function equipmentController_assignEquipment(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsEquipementController_assignEquipement, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsequipmentController_assignEquipment, request, response });
 
-                const controller = new EquipementController();
+                const controller = new equipmentController();
 
               await templateService.apiHandler({
-                methodName: 'assignEquipement',
+                methodName: 'assignEquipment',
                 controller,
                 response,
                 next,
@@ -2077,26 +2124,58 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        const argsEquipementController_deleteEquipement: Record<string, TsoaRoute.ParameterSchema> = {
-                equipementId: {"in":"path","name":"equipementId","required":true,"dataType":"string"},
+        const argsequipmentController_returnEquipment: Record<string, TsoaRoute.ParameterSchema> = {
+                equipmentId: {"in":"path","name":"equipmentId","required":true,"dataType":"string"},
+                userId: {"in":"path","name":"userId","required":true,"dataType":"string"},
         };
-        app.delete('/api/equipements/:equipementId',
-            authenticateMiddleware([{"jwt":["equipement:delete"]}]),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController)),
-            ...(fetchMiddlewares<RequestHandler>(EquipementController.prototype.deleteEquipement)),
+        app.put('/equipments/:equipmentId/return/:userId',
+            authenticateMiddleware([{"jwt":["equipment:update"]}]),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController)),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController.prototype.returnEquipment)),
 
-            async function EquipementController_deleteEquipement(request: ExRequest, response: ExResponse, next: any) {
+            async function equipmentController_returnEquipment(request: ExRequest, response: ExResponse, next: any) {
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
             let validatedArgs: any[] = [];
             try {
-                validatedArgs = templateService.getValidatedArgs({ args: argsEquipementController_deleteEquipement, request, response });
+                validatedArgs = templateService.getValidatedArgs({ args: argsequipmentController_returnEquipment, request, response });
 
-                const controller = new EquipementController();
+                const controller = new equipmentController();
 
               await templateService.apiHandler({
-                methodName: 'deleteEquipement',
+                methodName: 'returnEquipment',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsequipmentController_deleteEquipment: Record<string, TsoaRoute.ParameterSchema> = {
+                equipmentId: {"in":"path","name":"equipmentId","required":true,"dataType":"string"},
+        };
+        app.delete('/equipments/:equipmentId',
+            authenticateMiddleware([{"jwt":["equipment:delete"]}]),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController)),
+            ...(fetchMiddlewares<RequestHandler>(equipmentController.prototype.deleteEquipment)),
+
+            async function equipmentController_deleteEquipment(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsequipmentController_deleteEquipment, request, response });
+
+                const controller = new equipmentController();
+
+              await templateService.apiHandler({
+                methodName: 'deleteEquipment',
                 controller,
                 response,
                 next,
@@ -2127,6 +2206,36 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'getAllCards',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_getAvailableCards: Record<string, TsoaRoute.ParameterSchema> = {
+        };
+        app.get('/api/cards/available',
+            authenticateMiddleware([{"jwt":["card:read"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.getAvailableCards)),
+
+            async function CardController_getAvailableCards(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_getAvailableCards, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'getAvailableCards',
                 controller,
                 response,
                 next,
@@ -2204,7 +2313,7 @@ export function RegisterRoutes(app: Router) {
                 id: {"in":"path","name":"id","required":true,"dataType":"string"},
                 body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"userId":{"dataType":"string","required":true}}},
         };
-        app.put('/api/cards/assign/:id',
+        app.put('/api/cards/:id/assign',
             authenticateMiddleware([{"jwt":["card:assign"]}]),
             ...(fetchMiddlewares<RequestHandler>(CardController)),
             ...(fetchMiddlewares<RequestHandler>(CardController.prototype.assignCard)),
@@ -2221,6 +2330,38 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'assignCard',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsCardController_returnCard: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"userId":{"dataType":"string","required":true}}},
+        };
+        app.put('/api/cards/:id/return',
+            authenticateMiddleware([{"jwt":["card:update"]}]),
+            ...(fetchMiddlewares<RequestHandler>(CardController)),
+            ...(fetchMiddlewares<RequestHandler>(CardController.prototype.returnCard)),
+
+            async function CardController_returnCard(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsCardController_returnCard, request, response });
+
+                const controller = new CardController();
+
+              await templateService.apiHandler({
+                methodName: 'returnCard',
                 controller,
                 response,
                 next,
@@ -3108,6 +3249,7 @@ export function RegisterRoutes(app: Router) {
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         const argsappointmentController_cancelAppointment: Record<string, TsoaRoute.ParameterSchema> = {
                 id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                body: {"in":"body","name":"body","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"cancelReason":{"dataType":"string","required":true}}},
         };
         app.put('/api/appointments/cancel/:id',
             authenticateMiddleware([{"jwt":["appointment:update"]}]),
@@ -3157,6 +3299,38 @@ export function RegisterRoutes(app: Router) {
 
               await templateService.apiHandler({
                 methodName: 'onholdAppointment',
+                controller,
+                response,
+                next,
+                validatedArgs,
+                successStatus: undefined,
+              });
+            } catch (err) {
+                return next(err);
+            }
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        const argsappointmentController_rescheduleAppointment: Record<string, TsoaRoute.ParameterSchema> = {
+                id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                data: {"in":"body","name":"data","required":true,"dataType":"nestedObjectLiteral","nestedProperties":{"reasonToReschedule":{"dataType":"string","required":true},"appointmentLocation":{"dataType":"string","required":true},"timeDuration":{"dataType":"string","required":true},"appointmentTime":{"dataType":"string","required":true},"appointmentDate":{"dataType":"string","required":true}}},
+        };
+        app.put('/api/appointments/reschedule/:id',
+            authenticateMiddleware([{"jwt":["appointment:update"]}]),
+            ...(fetchMiddlewares<RequestHandler>(appointmentController)),
+            ...(fetchMiddlewares<RequestHandler>(appointmentController.prototype.rescheduleAppointment)),
+
+            async function appointmentController_rescheduleAppointment(request: ExRequest, response: ExResponse, next: any) {
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = templateService.getValidatedArgs({ args: argsappointmentController_rescheduleAppointment, request, response });
+
+                const controller = new appointmentController();
+
+              await templateService.apiHandler({
+                methodName: 'rescheduleAppointment',
                 controller,
                 response,
                 next,
